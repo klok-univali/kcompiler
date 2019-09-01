@@ -6,8 +6,18 @@
  */
 package view;
 
-public class KcompilerView extends javax.swing.JFrame {
+import controller.KcompilerController;
+import java.awt.Desktop;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
+public class KcompilerView extends javax.swing.JFrame {
+    
+    KcompilerController controller = new KcompilerController();
+    
     /**
      * Creates new form KcompilerView
      */
@@ -15,6 +25,25 @@ public class KcompilerView extends javax.swing.JFrame {
         initComponents();
         TextLineNumber contLine = new TextLineNumber(inputArea);
         scrollInput.setRowHeaderView(contLine);
+        
+        inputArea.addCaretListener(new CaretListener() {
+        	public void caretUpdate(CaretEvent e) {
+                JTextArea editArea = (JTextArea)e.getSource();
+                int linenum = 1;
+                int columnnum = 1;
+                try {
+
+                    int caretpos = editArea.getCaretPosition();
+                    linenum = editArea.getLineOfOffset(caretpos);
+                    columnnum = caretpos - editArea.getLineStartOffset(linenum);
+                    linenum += 1;
+                }
+                catch(Exception ex) { }
+                helpline.setText("row "+ linenum + ", column "+  columnnum);
+            }
+        });
+        
+        replaceTitle("new_document.txt");
     }
 
     /**
@@ -26,9 +55,11 @@ public class KcompilerView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
         scrollInput = new javax.swing.JScrollPane();
         inputArea = new javax.swing.JTextArea();
         scrollOutput = new javax.swing.JScrollPane();
+        outputArea = new javax.swing.JTextPane();
         helpline = new javax.swing.JLabel();
         btnNewDocument = new javax.swing.JButton();
         btnOpenDocument = new javax.swing.JButton();
@@ -38,6 +69,7 @@ public class KcompilerView extends javax.swing.JFrame {
         btnCut = new javax.swing.JButton();
         btnCompile = new javax.swing.JButton();
         btnExecute = new javax.swing.JButton();
+        btnCleanConsole = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         menuItemNew = new javax.swing.JMenuItem();
@@ -53,12 +85,23 @@ public class KcompilerView extends javax.swing.JFrame {
         menuCompilation = new javax.swing.JMenu();
         menuItemCompile = new javax.swing.JMenuItem();
         menuItemExecute = new javax.swing.JMenuItem();
+        menuItemCleanConsole = new javax.swing.JMenuItem();
         menuAbout = new javax.swing.JMenu();
+        menuItemTutorial = new javax.swing.JMenuItem();
+        menuItemAbout = new javax.swing.JMenuItem();
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kcompiler");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(800, 660));
         setPreferredSize(new java.awt.Dimension(800, 660));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         scrollInput.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollInput.setAutoscrolls(true);
@@ -71,8 +114,8 @@ public class KcompilerView extends javax.swing.JFrame {
         scrollOutput.setToolTipText("");
         scrollOutput.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollOutput.setAutoscrolls(true);
+        scrollOutput.setViewportView(outputArea);
 
-        helpline.setText("linha 1, coluna 1");
         helpline.setAutoscrolls(true);
 
         btnNewDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/document-new.png"))); // NOI18N
@@ -86,41 +129,104 @@ public class KcompilerView extends javax.swing.JFrame {
 
         btnOpenDocument.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/document-open.png"))); // NOI18N
         btnOpenDocument.setToolTipText("Open document");
+        btnOpenDocument.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenDocumentActionPerformed(evt);
+            }
+        });
 
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/save.png"))); // NOI18N
         btnSave.setToolTipText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         btnCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/copy.png"))); // NOI18N
         btnCopy.setToolTipText("Copy");
+        btnCopy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCopyActionPerformed(evt);
+            }
+        });
 
         btnPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/paste.png"))); // NOI18N
         btnPaste.setToolTipText("Paste");
+        btnPaste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPasteActionPerformed(evt);
+            }
+        });
 
         btnCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/cut.png"))); // NOI18N
         btnCut.setToolTipText("Cut");
+        btnCut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCutActionPerformed(evt);
+            }
+        });
 
         btnCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/compiler.png"))); // NOI18N
         btnCompile.setToolTipText("Compile");
+        btnCompile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompileActionPerformed(evt);
+            }
+        });
 
         btnExecute.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/execute.png"))); // NOI18N
         btnExecute.setToolTipText("Execute");
+        btnExecute.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExecuteActionPerformed(evt);
+            }
+        });
+
+        btnCleanConsole.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/clean.png"))); // NOI18N
+        btnCleanConsole.setToolTipText("Clean console");
+        btnCleanConsole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCleanConsoleActionPerformed(evt);
+            }
+        });
 
         menuFile.setText("File");
 
         menuItemNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/document-new.png"))); // NOI18N
         menuItemNew.setText("New");
+        menuItemNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemNewActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemNew);
 
         menuItemOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/document-open.png"))); // NOI18N
         menuItemOpen.setText("Open");
+        menuItemOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemOpenActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemOpen);
 
         menuItemSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/save.png"))); // NOI18N
         menuItemSave.setText("Save");
+        menuItemSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemSaveActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemSave);
 
         menuItemSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/save-as.png"))); // NOI18N
         menuItemSaveAs.setText("Save As");
+        menuItemSaveAs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemSaveAsActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemSaveAs);
 
         separatorMenuFile.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -128,6 +234,11 @@ public class KcompilerView extends javax.swing.JFrame {
 
         menuItemExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/exit.png"))); // NOI18N
         menuItemExit.setText("Exit");
+        menuItemExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemExitActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemExit);
 
         menuBar.add(menuFile);
@@ -136,14 +247,29 @@ public class KcompilerView extends javax.swing.JFrame {
 
         menuItemCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/copy.png"))); // NOI18N
         menuItemCopy.setText("Copy");
+        menuItemCopy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemCopyActionPerformed(evt);
+            }
+        });
         menuEdition.add(menuItemCopy);
 
         menuItemPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/paste.png"))); // NOI18N
         menuItemPaste.setText("Paste");
+        menuItemPaste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemPasteActionPerformed(evt);
+            }
+        });
         menuEdition.add(menuItemPaste);
 
         menuItemCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/cut.png"))); // NOI18N
         menuItemCut.setText("Cut");
+        menuItemCut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemCutActionPerformed(evt);
+            }
+        });
         menuEdition.add(menuItemCut);
 
         menuBar.add(menuEdition);
@@ -152,15 +278,53 @@ public class KcompilerView extends javax.swing.JFrame {
 
         menuItemCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/compiler.png"))); // NOI18N
         menuItemCompile.setText("Compile");
+        menuItemCompile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemCompileActionPerformed(evt);
+            }
+        });
         menuCompilation.add(menuItemCompile);
 
         menuItemExecute.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/execute.png"))); // NOI18N
         menuItemExecute.setText("Execute");
+        menuItemExecute.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemExecuteActionPerformed(evt);
+            }
+        });
         menuCompilation.add(menuItemExecute);
+
+        menuItemCleanConsole.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/clean.png"))); // NOI18N
+        menuItemCleanConsole.setText("Clean console");
+        menuItemCleanConsole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemCleanConsoleActionPerformed(evt);
+            }
+        });
+        menuCompilation.add(menuItemCleanConsole);
 
         menuBar.add(menuCompilation);
 
         menuAbout.setText("About");
+
+        menuItemTutorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/tutorial.png"))); // NOI18N
+        menuItemTutorial.setText("Tutorial");
+        menuItemTutorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemTutorialActionPerformed(evt);
+            }
+        });
+        menuAbout.add(menuItemTutorial);
+
+        menuItemAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/icons/about.png"))); // NOI18N
+        menuItemAbout.setText("About");
+        menuItemAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemAboutActionPerformed(evt);
+            }
+        });
+        menuAbout.add(menuItemAbout);
+
         menuBar.add(menuAbout);
 
         setJMenuBar(menuBar);
@@ -187,8 +351,10 @@ public class KcompilerView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCompile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnExecute)))
-                .addGap(0, 500, Short.MAX_VALUE))
+                        .addComponent(btnExecute)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCleanConsole)))
+                .addGap(0, 482, Short.MAX_VALUE))
             .addComponent(scrollInput, javax.swing.GroupLayout.Alignment.TRAILING)
             .addComponent(scrollOutput, javax.swing.GroupLayout.Alignment.TRAILING)
         );
@@ -206,9 +372,10 @@ public class KcompilerView extends javax.swing.JFrame {
                             .addComponent(btnCut)))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnCompile)
-                        .addComponent(btnExecute)))
+                        .addComponent(btnExecute))
+                    .addComponent(btnCleanConsole))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollInput, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                .addComponent(scrollInput, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addGap(12, 12, 12)
                 .addComponent(scrollOutput, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -220,8 +387,106 @@ public class KcompilerView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewDocumentActionPerformed
-        // TODO add your handling code here:
+        functionNewDocument();
     }//GEN-LAST:event_btnNewDocumentActionPerformed
+
+    private void menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExitActionPerformed
+        controller.functionExit(inputArea);
+    }//GEN-LAST:event_menuItemExitActionPerformed
+
+    private void btnCompileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompileActionPerformed
+        outputArea.setText(controller.functionCompile(inputArea, outputArea));
+    }//GEN-LAST:event_btnCompileActionPerformed
+
+    private void btnCleanConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCleanConsoleActionPerformed
+        functionCleanConsole();
+    }//GEN-LAST:event_btnCleanConsoleActionPerformed
+
+    private void menuItemCleanConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCleanConsoleActionPerformed
+        functionCleanConsole();
+    }//GEN-LAST:event_menuItemCleanConsoleActionPerformed
+
+    private void menuItemCompileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCompileActionPerformed
+        outputArea.setText(controller.functionCompile(inputArea, outputArea));
+    }//GEN-LAST:event_menuItemCompileActionPerformed
+
+    private void btnExecuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteActionPerformed
+        functionExecute();
+    }//GEN-LAST:event_btnExecuteActionPerformed
+
+    private void menuItemExecuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExecuteActionPerformed
+        functionExecute();
+    }//GEN-LAST:event_menuItemExecuteActionPerformed
+
+    private void menuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveActionPerformed
+        functionSave();
+    }//GEN-LAST:event_menuItemSaveActionPerformed
+
+    private void menuItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveAsActionPerformed
+        controller.functionSaveAs(inputArea);
+        if (! controller.getFullpathFile().isEmpty()) {
+            controller.generateHash(inputArea.getText());
+            replaceTitle(controller.getFullpathFile().substring(controller.getFullpathFile().lastIndexOf("/")+1));
+        }
+    }//GEN-LAST:event_menuItemSaveAsActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        functionSave();
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void menuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNewActionPerformed
+        functionNewDocument();
+    }//GEN-LAST:event_menuItemNewActionPerformed
+
+    private void menuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemOpenActionPerformed
+        functionOpenDocument();
+    }//GEN-LAST:event_menuItemOpenActionPerformed
+
+    private void btnOpenDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenDocumentActionPerformed
+        functionOpenDocument();
+    }//GEN-LAST:event_btnOpenDocumentActionPerformed
+
+    private void menuItemCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCopyActionPerformed
+        functionCopy();
+    }//GEN-LAST:event_menuItemCopyActionPerformed
+
+    private void btnCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopyActionPerformed
+        functionCopy();
+    }//GEN-LAST:event_btnCopyActionPerformed
+
+    private void menuItemPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemPasteActionPerformed
+        functionPaste();
+    }//GEN-LAST:event_menuItemPasteActionPerformed
+
+    private void btnPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasteActionPerformed
+        functionPaste();
+    }//GEN-LAST:event_btnPasteActionPerformed
+
+    private void menuItemCutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCutActionPerformed
+        functionCut();
+    }//GEN-LAST:event_menuItemCutActionPerformed
+
+    private void btnCutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCutActionPerformed
+        functionCut();
+    }//GEN-LAST:event_btnCutActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        controller.functionExit(inputArea);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void menuItemTutorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTutorialActionPerformed
+        Desktop desk = java.awt.Desktop.getDesktop();
+        try { 
+            desk.browse(new java.net.URI("https://github.com/klok-univali/kcompiler/blob/master/README.md"));
+        } catch (Exception e) { 
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_menuItemTutorialActionPerformed
+
+    private void menuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAboutActionPerformed
+        String txt = "Kcompiler is software to compile language '2019/02'\n\nAuthor: Gabriel Hegler Klok\nVersion 1.0";
+        JOptionPane.showMessageDialog(null, txt, "Kcompiler", HEIGHT);
+    }//GEN-LAST:event_menuItemAboutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -259,6 +524,7 @@ public class KcompilerView extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCleanConsole;
     private javax.swing.JButton btnCompile;
     private javax.swing.JButton btnCopy;
     private javax.swing.JButton btnCut;
@@ -269,11 +535,14 @@ public class KcompilerView extends javax.swing.JFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel helpline;
     private javax.swing.JTextArea inputArea;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenu menuAbout;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuCompilation;
     private javax.swing.JMenu menuEdition;
     private javax.swing.JMenu menuFile;
+    private javax.swing.JMenuItem menuItemAbout;
+    private javax.swing.JMenuItem menuItemCleanConsole;
     private javax.swing.JMenuItem menuItemCompile;
     private javax.swing.JMenuItem menuItemCopy;
     private javax.swing.JMenuItem menuItemCut;
@@ -284,8 +553,80 @@ public class KcompilerView extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemPaste;
     private javax.swing.JMenuItem menuItemSave;
     private javax.swing.JMenuItem menuItemSaveAs;
+    private javax.swing.JMenuItem menuItemTutorial;
+    private javax.swing.JTextPane outputArea;
     private javax.swing.JScrollPane scrollInput;
     private javax.swing.JScrollPane scrollOutput;
     private javax.swing.JPopupMenu.Separator separatorMenuFile;
     // End of variables declaration//GEN-END:variables
+    
+    
+    private void functionCleanConsole(){
+        outputArea.setText("");
+    }
+    
+    private void functionNewDocument(){
+        if (controller.functionNewDocument(inputArea)){
+            inputArea.setText("");
+            functionCleanConsole();
+            replaceTitle("new_document.txt");
+        }
+    }
+    
+    private void functionOpenDocument(){
+        String fullpath = controller.getFullpathFile();
+        controller.functionOpenDocument(inputArea);
+        if ( ! fullpath.equals(controller.getFullpathFile()) ) {
+            replaceTitle(controller.getFullpathFile().substring(controller.getFullpathFile().lastIndexOf("/")+1));
+        }
+    }
+    
+    private void functionExecute(){
+        alertFeature("'Execute'");
+    }
+    
+    private void functionSave(){
+        if (controller.getFullpathFile().isEmpty()){
+            controller.functionSaveAs(inputArea);
+            if (! controller.getFullpathFile().isEmpty()) {
+                controller.generateHash(inputArea.getText());
+                replaceTitle(controller.getFullpathFile().substring(controller.getFullpathFile().lastIndexOf("/")+1));
+            }
+        } else {
+            controller.functionSave(inputArea);
+            controller.generateHash(inputArea.getText());
+        }
+    }
+    
+    private void functionCopy(){
+        inputArea.copy();
+    }
+    
+    private void functionPaste(){
+        inputArea.paste();
+    }
+    
+    private void functionCut(){
+        inputArea.cut();
+    }
+    
+    private void replaceTitle(String filename){
+        setTitle("Kcompiler - " + filename);
+    }
+    
+    public static int modalSaveOrCancel(){
+        return JOptionPane.showInternalConfirmDialog(null, "Unsaved changes. Do you want to save?", "Kcompiler", WIDTH);
+    }
+    
+    public static int replaceFile(){
+        return JOptionPane.showInternalConfirmDialog(null, "File already exists. Do you want to overwrite?", "Kcompiler", WIDTH);
+    }
+    
+    public static void alertFeature(String feature){
+        JOptionPane.showMessageDialog(null, "Feature " + feature + " don't implemented!", "Kcompiler", HEIGHT);
+    }
+    
+    public static void alertFileNotSave(){
+        JOptionPane.showMessageDialog(null, "Save the open document before proceeding.", "Kcompiler", HEIGHT);
+    }
 }
