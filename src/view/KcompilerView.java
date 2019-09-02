@@ -8,7 +8,6 @@ package view;
 
 import controller.KcompilerController;
 import java.awt.Desktop;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.event.CaretEvent;
@@ -391,7 +390,7 @@ public class KcompilerView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewDocumentActionPerformed
 
     private void menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExitActionPerformed
-        controller.functionExit(inputArea);
+        controller.functionExit(inputArea, 1);
     }//GEN-LAST:event_menuItemExitActionPerformed
 
     private void btnCompileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompileActionPerformed
@@ -471,7 +470,7 @@ public class KcompilerView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCutActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        controller.functionExit(inputArea);
+        controller.functionExit(inputArea, 0);
     }//GEN-LAST:event_formWindowClosing
 
     private void menuItemTutorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTutorialActionPerformed
@@ -589,12 +588,10 @@ public class KcompilerView extends javax.swing.JFrame {
         if (controller.getFullpathFile().isEmpty()){
             controller.functionSaveAs(inputArea);
             if (! controller.getFullpathFile().isEmpty()) {
-                controller.generateHash(inputArea.getText());
                 replaceTitle(controller.getFullpathFile().substring(controller.getFullpathFile().lastIndexOf("/")+1));
             }
         } else {
             controller.functionSave(inputArea);
-            controller.generateHash(inputArea.getText());
         }
     }
     
@@ -614,19 +611,23 @@ public class KcompilerView extends javax.swing.JFrame {
         setTitle("Kcompiler - " + filename);
     }
     
-    public static int modalSaveOrCancel(){
-        return JOptionPane.showInternalConfirmDialog(null, "Unsaved changes. Do you want to save?", "Kcompiler", WIDTH);
+    public static int modalSaveOrCancel(int typeBtn){
+        return JOptionPane.showInternalConfirmDialog(null, "Unsaved changes. Do you want to save?", "Kcompiler", typeBtn);
     }
     
     public static int replaceFile(){
-        return JOptionPane.showInternalConfirmDialog(null, "File already exists. Do you want to overwrite?", "Kcompiler", WIDTH);
+        return JOptionPane.showInternalConfirmDialog(null, "File already exists. Do you want to overwrite?", "Kcompiler", 1);
     }
     
     public static void alertFeature(String feature){
-        JOptionPane.showMessageDialog(null, "Feature " + feature + " don't implemented!", "Kcompiler", HEIGHT);
+        JOptionPane.showMessageDialog(null, "Feature " + feature + " don't implemented!", "Kcompiler", 2);
     }
     
     public static void alertFileNotSave(){
-        JOptionPane.showMessageDialog(null, "Save the open document before proceeding.", "Kcompiler", HEIGHT);
+        JOptionPane.showMessageDialog(null, "Save the open document before proceeding.", "Kcompiler", 2);
+    }
+    
+    public static void alertFileExtension(){
+        JOptionPane.showMessageDialog(null, "File extension invalid.", "Kcompiler", 2);
     }
 }

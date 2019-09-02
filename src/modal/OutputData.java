@@ -6,16 +6,17 @@ package modal;
 
 import java.util.ArrayList;
 
-
 public class OutputData {
     private static ArrayList<String> valid = new ArrayList<>();
     private static ArrayList<String> invalid = new ArrayList<>();
     
     public static void addOutputValid(String token, int row, int column, String type, int id){
+        token = token.substring(token.length()-1, token.length()).equals("\n") ? token.substring(0, token.length()-1) : token;
         valid.add(token + " in row: " + row + ", column: " + column + " of type '" + type + "' | id '" + id + "'");
     }
     
     public static void addOutputInvalid(String token, int row, int column, String type, int id){
+        token = token.substring(token.length()-1, token.length()).equals("\n") ? token.substring(0, token.length()-1) : token;
         invalid.add("Error: " + token + " in row: " + row + ", column: " + column + " of type '" + type + "' | id '" + id + "'");
     }
     

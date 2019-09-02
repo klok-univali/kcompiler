@@ -1,4 +1,6 @@
 /**
+ * Class KcompilerController
+ * 
  * @author Gabriel Hegler Klok
  * @since 2019/08
  */
@@ -29,6 +31,9 @@ public class KcompilerController {
     private String hash;
     private String fullpathFile;
     
+    static int BTN_OK_NO = 0;
+    static int BTN_OK_NO_CANCEL = 1;
+    
     public KcompilerController() {
         this.hash = generateHash("");
         this.fullpathFile = "";
@@ -43,7 +48,7 @@ public class KcompilerController {
     }
     
     public boolean functionNewDocument(JTextArea inputArea){
-        if ( verifyModifications(inputArea, this.hash, this.fullpathFile) ){
+        if ( verifyModifications(inputArea, this.hash, this.fullpathFile, BTN_OK_NO_CANCEL) ){
             this.hash = generateHash("");
             this.fullpathFile = "";
             return true;
@@ -52,7 +57,7 @@ public class KcompilerController {
     }
     
     public void functionOpenDocument(JTextArea inputArea){
-        if ( verifyModifications(inputArea, this.hash, this.fullpathFile) ) {
+        if ( verifyModifications(inputArea, this.hash, this.fullpathFile, BTN_OK_NO_CANCEL) ) {
             findDocument(inputArea);
         }
     }
@@ -61,21 +66,34 @@ public class KcompilerController {
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter extensao = new FileNameExtensionFilter("TXT (*.txt)", "txt");
         fileChooser.setFileFilter(extensao);
+        boolean ok = true;
         
-        if ( fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION ) {
-            File file = fileChooser.getSelectedFile();
-
-            inputArea.setText(readFile(file.getAbsolutePath()));
-            this.hash = generateHash(inputArea.getText());
-            this.fullpathFile = file.getAbsolutePath();
+        while(ok){
+            if ( fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION ) {
+                File file = fileChooser.getSelectedFile();
+                String filename = file.getAbsolutePath();
+                
+                if ( filename.substring(filename.length()-4).equalsIgnoreCase(".txt") ) {
+                    inputArea.setText(readFile(file.getAbsolutePath()));
+                    this.hash = generateHash(inputArea.getText());
+                    this.fullpathFile = file.getAbsolutePath();
+                    ok = false;
+                } else {
+                    KcompilerView.alertFileExtension();
+                }
+            } else {
+                ok = false;
+            }
         }
     }
     
     public void functionSave(JTextArea inputArea){
         writeFile(inputArea.getText(), this.fullpathFile);
+        this.hash = generateHash(inputArea.getText());
     }
     
     public void functionSaveAs(JTextArea inputArea){
+        boolean ok = true;
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter extensao = new FileNameExtensionFilter("TXT (*.txt)", "txt");
         fileChooser.setFileFilter(extensao);
@@ -83,34 +101,48 @@ public class KcompilerController {
         if (! this.fullpathFile.isEmpty()) {
             fileChooser.setSelectedFile(new File(this.fullpathFile));
         }
-        
+         
         try {
-            
-            if ( fileChooser.showSaveDialog(fileChooser) == JFileChooser.APPROVE_OPTION ) {
-                File file = fileChooser.getSelectedFile();
-                this.fullpathFile = file.getAbsolutePath();
-                
-                if (! this.fullpathFile.contains(".txt")) {
-                    this.fullpathFile += ".txt";
-                }
-                
-                if ( new File(this.fullpathFile).exists() ) {
-                    if ( KcompilerView.replaceFile() == 0 ) {
-                        writeFile(inputArea.getText(), this.fullpathFile);
-                    } else {
-                        this.fullpathFile = "";
+            while (ok) {   
+                if ( fileChooser.showSaveDialog(fileChooser) == JFileChooser.APPROVE_OPTION ) {
+                    File file = fileChooser.getSelectedFile();
+                    this.fullpathFile = file.getAbsolutePath();
+
+                    if ( ! this.fullpathFile.substring(this.fullpathFile.length()-4).equalsIgnoreCase(".txt") ) {
+                        this.fullpathFile += ".txt";
                     }
-                } else {
-                    writeFile(inputArea.getText(), this.fullpathFile);
+
+                    if ( new File(this.fullpathFile).exists() ) {
+                        switch(KcompilerView.replaceFile()){
+                            case 0: //Yes replace
+                                writeFile(inputArea.getText(), this.fullpathFile);
+                                this.hash = generateHash(inputArea.getText());
+                                ok = false;
+                                break;
+                            
+                            case 1: //No replace
+                                this.fullpathFile = "";
+                                break;
+                                
+                            case 2: //Cancel replace
+                                this.fullpathFile = "";
+                                ok = false;
+                                break;
+                        }
+                    } else {
+                        writeFile(inputArea.getText(), this.fullpathFile);
+                        this.hash = generateHash(inputArea.getText());
+                        ok = false;
+                    }
+                } else { //Cancel modal files
+                    ok = false;
                 }
             }
-            
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
     }
     
-    public void functionExit(JTextArea inputArea){     
-        if ( verifyModifications(inputArea, this.hash, this.fullpathFile) ) {
+    public void functionExit(JTextArea inputArea, int typeBtn){     
+        if ( verifyModifications(inputArea, this.hash, this.fullpathFile, typeBtn) ) {
             System.exit(0);
         }
     }
@@ -147,12 +179,9 @@ public class KcompilerController {
                         outputTmp += string + '\n';
                     }
                 }
-                
-                OutputData.clean();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
-        
+        OutputData.clean();
         return outputTmp;
     }
     
@@ -163,8 +192,7 @@ public class KcompilerController {
             MessageDigest m = MessageDigest.getInstance("MD5");
             m.update(s.getBytes(),0,s.length());
             hashTmp = new BigInteger(1,m.digest()).toString(16);
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
         
         return hashTmp;
     }
@@ -179,8 +207,7 @@ public class KcompilerController {
                 buff_escrita.newLine();
             }
             buff_escrita.close();
-        } catch (Exception e) {
-        }  
+        } catch (Exception e) {}  
     }
     
     private String readFile(String filename){
@@ -200,19 +227,17 @@ public class KcompilerController {
             string_builder.delete(string_builder.length()-1, string_builder.length());
             content = string_builder.toString();
 
-        } catch (Exception e) {
-        }
-        
+        } catch (Exception e) {}
         return content;
     }
     
-    private boolean verifyModifications(JTextArea inputArea, String hash, String fullpathFile){
+    private boolean verifyModifications(JTextArea inputArea, String hash, String fullpathFile, int typeBtn){
         boolean response = false;
         
         if ( hash.equals(generateHash(inputArea.getText())) ) {
             response = true;
         } else {
-            switch( KcompilerView.modalSaveOrCancel() ){
+            switch( KcompilerView.modalSaveOrCancel(typeBtn) ){
                 case 0: //Yes
                     if ( fullpathFile.isEmpty() ) {
                         functionSaveAs(inputArea);
@@ -227,8 +252,6 @@ public class KcompilerController {
                     break;
             } 
         }
-        
         return response;
-    }
-    
+    }   
 }
