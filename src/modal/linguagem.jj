@@ -123,20 +123,41 @@ TOKEN : {
     <#LETTER: (<UPPER_CASE>|<LOWER_CASE>)> |
     <#UNDERLINE: ["_"]> |
     <IDENTIFIER: 
-        <UPPER_CASE>(<UNDERLINE>)?(<LETTER>|(<DIGIT>(<DIGIT>)?((<UNDERLINE>)?<LETTER>|<UNDERLINE>(<LETTER>)?|(<LETTER>)?<UNDERLINE>|<LETTER>(<UNDERLINE>)?)))*
+        <UPPER_CASE>(<UNDERLINE>)?(<LETTER>(<UNDERLINE>)?|(<DIGIT>(<DIGIT>)?((<UNDERLINE>)?<LETTER>|<UNDERLINE>(<LETTER>)?|(<LETTER>)?<UNDERLINE>|<LETTER>(<UNDERLINE>)?)))*
     > {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Identifier", jjmatchedKind);}
 }
 
 //Errors
 SPECIAL_TOKEN : {
+    <#EQUAL: "="> |
+    <#INEQUALITY_MINUS: ["<"]> |
+    <#INEQUALITY_PLUS: [">"]> |
     <INVALID_SIMBOLS: (~["a"-"z","A"-"Z","0"-"9","\"","[","]",",",".","=","!",">","<","+","-","_","*","&","/","%","|","\n","\r","\t"," "])+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid symbols", jjmatchedKind);} |
+    <INVALID_ARITHMETIC_OPERATOR:
+        <PLUS>(<PLUS>)+ |
+        <MINUS>(<MINUS>)+ |
+        <DIVIDER>(<DIVIDER>)+ |
+        <POW>(<MULTIPLY>|<POW>)+ |
+        <MOD>(<PERCENT>|<MOD>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid arithmetic operator", jjmatchedKind);} |
+    <INVALID_RELATIONAL_OPERATOR:
+        <EQUALS>(<EQUAL>)+ |
+        <DIFFERENT>(<EQUAL>)+ |
+        <LESS>(<INEQUALITY_MINUS>)+ |
+        <GREATER>(<INEQUALITY_PLUS>)+ |
+        <LESS_EQUAL>(<EQUAL>)+ |
+        <GREATER_EQUAL>(<EQUAL>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid relational operator", jjmatchedKind);} |
+    <INVALI_LOGICAL_OPERATOR:
+        <AMPERSAND>(<AMPERSAND>)+ |
+        <PIPE>(<PIPE>)+ |
+        <EXCLAMATION>(<EXCLAMATION>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid logical operator", jjmatchedKind);} |
+    <INVALID_INTEGER_NUMBER: <DIGIT><DIGIT><DIGIT><DIGIT>(<DIGIT>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid integer number", jjmatchedKind);} |
     <INVALID_REAL_NUMBER: (<DIGIT>)+<DOT>(<DIGIT>)*> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid real number", jjmatchedKind);} |
     <INVALID_LITERAL_CONSTANT: "\"" (~["\n","\r","\""])* ~["\""]> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid literal constant", jjmatchedKind);} |
     <INVALID_IDENTIFIER: 
-        <UPPER_CASE>(<LETTER>|<DIGIT>)*<UNDERLINE>(<UNDERLINE>)+(<LETTER>)* |
+        <UPPER_CASE>(<LETTER>|<DIGIT>)*<UNDERLINE>(<UNDERLINE>)+(<LETTER>|<UNDERLINE>)* |
         <UPPER_CASE>(<LETTER>|<DIGIT>|<UNDERLINE>)*(<DIGIT>)+ | 
         <LOWER_CASE>(<LETTER>|<DIGIT>|<UNDERLINE>)* |
-        <DIGIT>(<LETTER>|<DIGIT>|<UNDERLINE>)* |
+        <DIGIT>(<DIGIT>)*(<LETTER>|<UNDERLINE>)+ |
         <UNDERLINE>(<LETTER>|<DIGIT>|<UNDERLINE>)*
     > {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid identifier", jjmatchedKind);}
 }

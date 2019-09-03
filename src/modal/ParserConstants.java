@@ -121,13 +121,27 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int IDENTIFIER = 61;
   /** RegularExpression Id. */
-  int INVALID_SIMBOLS = 62;
+  int EQUAL = 62;
   /** RegularExpression Id. */
-  int INVALID_REAL_NUMBER = 63;
+  int INEQUALITY_MINUS = 63;
   /** RegularExpression Id. */
-  int INVALID_LITERAL_CONSTANT = 64;
+  int INEQUALITY_PLUS = 64;
   /** RegularExpression Id. */
-  int INVALID_IDENTIFIER = 65;
+  int INVALID_SIMBOLS = 65;
+  /** RegularExpression Id. */
+  int INVALID_ARITHMETIC_OPERATOR = 66;
+  /** RegularExpression Id. */
+  int INVALID_RELATIONAL_OPERATOR = 67;
+  /** RegularExpression Id. */
+  int INVALI_LOGICAL_OPERATOR = 68;
+  /** RegularExpression Id. */
+  int INVALID_INTEGER_NUMBER = 69;
+  /** RegularExpression Id. */
+  int INVALID_REAL_NUMBER = 70;
+  /** RegularExpression Id. */
+  int INVALID_LITERAL_CONSTANT = 71;
+  /** RegularExpression Id. */
+  int INVALID_IDENTIFIER = 72;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -198,7 +212,14 @@ public interface ParserConstants {
     "<LETTER>",
     "<UNDERLINE>",
     "<IDENTIFIER>",
+    "\"=\"",
+    "<INEQUALITY_MINUS>",
+    "<INEQUALITY_PLUS>",
     "<INVALID_SIMBOLS>",
+    "<INVALID_ARITHMETIC_OPERATOR>",
+    "<INVALID_RELATIONAL_OPERATOR>",
+    "<INVALI_LOGICAL_OPERATOR>",
+    "<INVALID_INTEGER_NUMBER>",
     "<INVALID_REAL_NUMBER>",
     "<INVALID_LITERAL_CONSTANT>",
     "<INVALID_IDENTIFIER>",

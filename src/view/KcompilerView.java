@@ -616,7 +616,7 @@ public class KcompilerView extends javax.swing.JFrame {
     }
     
     public static int replaceFile(){
-        return JOptionPane.showInternalConfirmDialog(null, "File already exists. Do you want to overwrite?", "Kcompiler", 1);
+        return JOptionPane.showInternalConfirmDialog(null, "File already exists. Do you want to overwrite?", "Kcompiler", 0);
     }
     
     public static void alertFeature(String feature){
