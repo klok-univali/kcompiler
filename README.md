@@ -6,6 +6,10 @@
 - Sintático - *aguardando implementação*
 - Semantico - *aguardando implementação*
 
+## Executar software
+
+  `$ java -jar kcompiler.jar`
+
 ## Linguagem 2019-02
 
 ### Palavras reservadas
