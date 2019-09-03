@@ -1,14 +1,14 @@
 # kcompiler
 **Kcompiler** é um compilador para a linguagem "2019-02" da disciplina de compiladores, curso de Ciência da Computação da UNIVALI.
 
-##Etapas/Status
+#Etapas/Status
 - Lexico - ***ok***
 - Sintático - *aguardando implementação*
 - Semantico - *aguardando implementação*
 
-##Linguagem 2019-02
+#Linguagem 2019-02
 
-###Palavras reservadas
+#Palavras reservadas
 - TOKEN
 - PROGRAM
 - EXECUTE
@@ -33,13 +33,13 @@
 - CARRY
 - OUT
 
-###Símbolos especiais
+#Símbolos especiais
 - [
 - ]
 - .
 - ,
 
-##Operadores Aritméticos
+#Operadores Aritméticos
 
 - +
 - -
@@ -49,7 +49,7 @@
 - %
 - %%
 
-###Operadores relacionais
+#Operadores relacionais
 - ==
 - !=
 - <<
@@ -57,23 +57,23 @@
 - <<=
 - \>>=
 
-###Operadores lógicos
+#Operadores lógicos
 - &
 - |
 - !
 
-###Constantes numéricas
+#Constantes numéricas
 - Ex.: 9 (inteiro)
 - Ex.: 9.4 (real)
 
-###Constante literal
+#Constante literal
 - Ex.: “hello”
 
-###Identificadores
+#Identificadores
 - Ex.: H_
 
 
-##Recursos do software
+#Recursos do software
 - Criar documentos com extensão (.txt)
 - Abrir documentos com extensão (.txt)
 - Salvar
