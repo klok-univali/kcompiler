@@ -31,14 +31,13 @@ public class KcompilerView extends javax.swing.JFrame {
                 int linenum = 1;
                 int columnnum = 1;
                 try {
-
                     int caretpos = editArea.getCaretPosition();
                     linenum = editArea.getLineOfOffset(caretpos);
                     columnnum = caretpos - editArea.getLineStartOffset(linenum);
                     linenum += 1;
                 }
                 catch(Exception ex) { }
-                helpline.setText("row "+ linenum + ", column "+  columnnum);
+                helpline.setText("row "+ linenum + ", column " +  columnnum);
             }
         });
         
@@ -569,6 +568,7 @@ public class KcompilerView extends javax.swing.JFrame {
             inputArea.setText("");
             functionCleanConsole();
             replaceTitle("new_document.txt");
+            helpline.setText("row "+ 1 + ", column " +  0);
         }
     }
     
@@ -577,6 +577,8 @@ public class KcompilerView extends javax.swing.JFrame {
         controller.functionOpenDocument(inputArea);
         if ( ! fullpath.equals(controller.getFullpathFile()) ) {
             replaceTitle(controller.getFullpathFile().substring(controller.getFullpathFile().lastIndexOf("/")+1));
+            functionCleanConsole();
+            helpline.setText("row "+ 1 + ", column " +  0);
         }
     }
     

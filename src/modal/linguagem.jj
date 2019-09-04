@@ -34,10 +34,7 @@ SKIP : {
 }
 
 <commentmultiline> SKIP : {
-    "-kk" {OutputData.removeLastOutputInvalid();}: DEFAULT
-}
-
-<commentmultiline> MORE : {
+    "-kk" {OutputData.removeLastOutputInvalid();}: DEFAULT |
     <~[]>
 }
 
@@ -71,6 +68,9 @@ TOKEN [IGNORE_CASE]: {
 TOKEN : {
     <OPEN_BRACKET: "["> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
     <CLOSE_BRACKET: "]"> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
+    <OPEN_PARENTHESIS: "("> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
+    <CLOSE_PARENTHESIS: ")"> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
+    <EQUAL: "="> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
     <DOT: "."> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
     <COMMA: ","> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);}
 }
@@ -129,10 +129,9 @@ TOKEN : {
 
 //Errors
 SPECIAL_TOKEN : {
-    <#EQUAL: "="> |
     <#INEQUALITY_MINUS: ["<"]> |
     <#INEQUALITY_PLUS: [">"]> |
-    <INVALID_SIMBOLS: (~["a"-"z","A"-"Z","0"-"9","\"","[","]",",",".","=","!",">","<","+","-","_","*","&","/","%","|","\n","\r","\t"," "])+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid symbols", jjmatchedKind);} |
+    <INVALID_SIMBOLS: (~["a"-"z","A"-"Z","0"-"9","\"","[","]","(",")",",",".","=","!",">","<","+","-","_","*","&","/","%","|","\n","\r","\t"," "])+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid symbols", jjmatchedKind);} |
     <INVALID_ARITHMETIC_OPERATOR:
         <PLUS>(<PLUS>)+ |
         <MINUS>(<MINUS>)+ |

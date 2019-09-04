@@ -92,7 +92,8 @@ public class KcompilerController {
         this.hash = generateHash(inputArea.getText());
     }
     
-    public void functionSaveAs(JTextArea inputArea){
+    public boolean functionSaveAs(JTextArea inputArea){
+        boolean salved = true;
         boolean ok = true;
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter extensao = new FileNameExtensionFilter("TXT (*.txt)", "txt");
@@ -127,6 +128,7 @@ public class KcompilerController {
                             case 2: //Cancel replace
                                 this.fullpathFile = "";
                                 ok = false;
+                                salved = false;
                                 break;
                         }
                     } else {
@@ -136,9 +138,11 @@ public class KcompilerController {
                     }
                 } else { //Cancel modal files
                     ok = false;
+                    salved = false;
                 }
             }
         } catch (Exception e) {}
+        return salved;
     }
     
     public void functionExit(JTextArea inputArea, int typeBtn){     
@@ -240,11 +244,11 @@ public class KcompilerController {
             switch( KcompilerView.modalSaveOrCancel(typeBtn) ){
                 case 0: //Yes
                     if ( fullpathFile.isEmpty() ) {
-                        functionSaveAs(inputArea);
+                        response = functionSaveAs(inputArea);
                     } else {
                         functionSave(inputArea);
+                        response = true;
                     }
-                    response = true;
                     break;
                     
                 case 1: //No
