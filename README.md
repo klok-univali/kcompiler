@@ -40,6 +40,9 @@
 ### Símbolos especiais
 - [
 - ]
+- (
+- )
+- =
 - .
 - ,
 
