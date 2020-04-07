@@ -1,10 +1,12 @@
+package kcompiler;
+
 /**
  * Kcompiler
  * 
  * @author Gabriel Hegler Klok
  * @since 2019/08
  */
-package kcompiler;
+
 
 import view.KcompilerView;
 

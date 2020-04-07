@@ -125,7 +125,7 @@ TOKEN : {
     <#LETTER: (<UPPER_CASE>|<LOWER_CASE>)> |
     <#UNDERLINE: ["_"]> |
     <IDENTIFIER:
-        (<LETTER>)+((<DIGIT>)?(<LETTER>|(<UNDERLINE>)+(<LETTER>)+)*|(<UNDERLINE>)*)?
+        (<LETTER>)+(<DIGIT>(<UNDERLINE>|<LETTER>))?(<UNDERLINE>|(<UNDERLINE>)?<LETTER><DIGIT>(<UNDERLINE>|<LETTER>)+|<LETTER>)*
     > {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Identifier", jjmatchedKind);}
 }
 
