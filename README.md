@@ -1,5 +1,5 @@
 # kcompiler
-**Kcompiler** é um compilador para a linguagem "2019-02" da disciplina de compiladores, curso de Ciência da Computação da UNIVALI.
+**Kcompiler** é um compilador para a linguagem "2020-01" da disciplina de compiladores, curso de Ciência da Computação da UNIVALI.
 
 ## Etapas/Status
 - Lexico - ***ok***
@@ -13,29 +13,30 @@
 ## Linguagem 2019-02
 
 ### Palavras reservadas
-- TOKEN
-- PROGRAM
-- EXECUTE
+- DO
 - THIS
-- PURPOSE
-- DECLARE
+- BODY
+- DESCRIPTION
+- DECLARATION
+- TYPE
+- IS
 - AS
 - CONSTANT
 - VARIABLE
+- AND
 - INTEGER
 - REAL
 - STRING
-- BOOLEAN
-- ASSIGN
-- ACQUIRE
-- SHOW
-- PUT
-- CHECK
+- LOGIC
+- DESIGNATE
+- READ
+- WHITE
+- ALL
+- AVALIATE
 - TRUE
-- RESULT
 - UNTRUE
-- CARRY
-- OUT
+- RESULT
+- REPEAT
 
 ### Símbolos especiais
 - [
@@ -70,15 +71,17 @@
 - !
 
 ### Constantes numéricas
-- Ex.: 9 (inteiro)
-- Ex.: 9.4 (real)
+- Ex.: 999 (inteiro)
+- Ex.: 99999.999 (real)
 
 ### Constante literal
 - Ex.: “hello”
 
 ### Identificadores
 - Ex.: H_
-
+- Ex.: H4d
+- Ex.: h4_
+- Ex.: Ola__e
 
 ## Recursos do software
 - Criar documentos com extensão (.txt)

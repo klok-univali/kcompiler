@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -63,7 +64,7 @@ public class KcompilerController {
     }
     
     private void findDocument(JTextArea inputArea){
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(this.fullpathFile);
         FileNameExtensionFilter extensao = new FileNameExtensionFilter("TXT (*.txt)", "txt");
         fileChooser.setFileFilter(extensao);
         boolean ok = true;
@@ -95,7 +96,7 @@ public class KcompilerController {
     public boolean functionSaveAs(JTextArea inputArea){
         boolean salved = true;
         boolean ok = true;
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(this.fullpathFile);
         FileNameExtensionFilter extensao = new FileNameExtensionFilter("TXT (*.txt)", "txt");
         fileChooser.setFileFilter(extensao);
         
@@ -122,11 +123,9 @@ public class KcompilerController {
                                 break;
                             
                             case 1: //No replace
-                                this.fullpathFile = "";
                                 break;
                                 
                             case 2: //Cancel replace
-                                this.fullpathFile = "";
                                 ok = false;
                                 salved = false;
                                 break;

@@ -25,43 +25,45 @@ SKIP : {
 
 //Single comment
 SPECIAL_TOKEN : {
-  <SINGLE_LINE_COMMENT: "hh-" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
 }
 
 //Block comment
 SKIP : {
-    "kk-" {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Unfinished block comment", jjmatchedKind);}: commentmultiline
+    "/*" {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Unfinished block comment", jjmatchedKind);}: commentmultiline
 }
 
 <commentmultiline> SKIP : {
-    "-kk" {OutputData.removeLastOutputInvalid();}: DEFAULT |
+    "*/" {OutputData.removeLastOutputInvalid();}: DEFAULT |
     <~[]>
 }
 
 //Reserved word
 TOKEN [IGNORE_CASE]: {
-    <PROGRAM: ("program")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <EXECUTE: ("execute")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <DO: ("do")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <THIS: ("this")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <PURPOSE: ("purpose")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <DECLARE: ("declare")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <BODY: ("body")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <DESCRIPTION: ("description")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <DECLARATION: ("declaration")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <TYPE: ("type")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <IS: ("is")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <AS: ("as")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <CONSTANT: ("constant")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <VARIABLE: ("variable")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <AND: ("and")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <INTEGER: ("integer")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <REAL: ("real")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <STRING: ("string")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <BOOLEAN: ("boolean")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <ASSIGN: ("assign")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <ACQUIRE: ("acquire")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <SHOW: ("show")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <PUT: ("put")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <CHECK: ("check")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <LOGIC: ("logic")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <DESIGNATE: ("designate")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <READ: ("read")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <WRITE: ("write")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <ALL: ("all")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <AVALIATE: ("avaliate")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <TRUE: ("true")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <RESULT: ("result")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
     <UNTRUE: ("untrue")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <CARRY: ("carry")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
-    <OUT: ("out")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);}
+    <RESULT: ("result")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);} |
+    <REPEAT: ("repeat")> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Reserved word", jjmatchedKind);}
 }
 
 //Special symbol
@@ -107,7 +109,7 @@ TOKEN : {
 TOKEN : {
     <#DIGIT: ["0"-"9"]> |
     <#DECIMAL_NUMBER: <DOT><DIGIT>((<DIGIT>)?){2}> |
-    <NUMBER_INTEGER: <DIGIT>((<DIGIT>)?){3}> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Integer number", jjmatchedKind);} |
+    <NUMBER_INTEGER: <DIGIT>((<DIGIT>)?){2}> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Integer number", jjmatchedKind);} |
     <NUMBER_REAL: <DIGIT>((<DIGIT>)?){4}<DECIMAL_NUMBER>> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Real number", jjmatchedKind);}
 }
 
@@ -122,8 +124,8 @@ TOKEN : {
     <#LOWER_CASE: ["a"-"z"]> |
     <#LETTER: (<UPPER_CASE>|<LOWER_CASE>)> |
     <#UNDERLINE: ["_"]> |
-    <IDENTIFIER: 
-        <UPPER_CASE>(<UNDERLINE>)?(<LETTER>(<UNDERLINE>)?|(<DIGIT>(<DIGIT>)?((<UNDERLINE>)?<LETTER>|<UNDERLINE>(<LETTER>)?|(<LETTER>)?<UNDERLINE>|<LETTER>(<UNDERLINE>)?)))*
+    <IDENTIFIER:
+        (<LETTER>)+((<DIGIT>)?(<LETTER>|(<UNDERLINE>)+(<LETTER>)+)*|(<UNDERLINE>)*)?
     > {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Identifier", jjmatchedKind);}
 }
 
@@ -149,14 +151,17 @@ SPECIAL_TOKEN : {
         <AMPERSAND>(<AMPERSAND>)+ |
         <PIPE>(<PIPE>)+ |
         <EXCLAMATION>(<EXCLAMATION>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid logical operator", jjmatchedKind);} |
-    <INVALID_INTEGER_NUMBER: <DIGIT><DIGIT><DIGIT><DIGIT>(<DIGIT>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid integer number", jjmatchedKind);} |
-    <INVALID_REAL_NUMBER: (<DIGIT>)+<DOT>(<DIGIT>)*> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid real number", jjmatchedKind);} |
+    <INVALID_INTEGER_NUMBER: <DIGIT><DIGIT><DIGIT>(<DIGIT>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid integer number", jjmatchedKind);} |
+    <INVALID_REAL_NUMBER: <DOT>(<DIGIT>)+ |
+        <DOT><DIGIT><DIGIT><DIGIT>(<DIGIT>)+ |
+        <DIGIT><DIGIT><DIGIT><DIGIT><DIGIT>(<DIGIT>)+<DOT><DIGIT><DIGIT><DIGIT>
+    > {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid real number", jjmatchedKind);} |
     <INVALID_LITERAL_CONSTANT: "\"" (~["\n","\r","\""])* ~["\""]> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid literal constant", jjmatchedKind);} |
     <INVALID_IDENTIFIER: 
-        <UPPER_CASE>(<LETTER>|<DIGIT>)*<UNDERLINE>(<UNDERLINE>)+(<LETTER>|<UNDERLINE>)* |
-        <UPPER_CASE>(<LETTER>|<DIGIT>|<UNDERLINE>)*(<DIGIT>)+ | 
-        <LOWER_CASE>(<LETTER>|<DIGIT>|<UNDERLINE>)* |
-        <DIGIT>(<DIGIT>)*(<LETTER>|<UNDERLINE>)+ |
+        <LETTER>(<LETTER>|<DIGIT>|<UNDERLINE>)*<DIGIT>(<DIGIT>)+(<LETTER>|<UNDERLINE>)* |
+        <LETTER>(<LETTER>|<DIGIT>|<UNDERLINE>)*(<DIGIT>)+ | 
+        <LETTER>(<LETTER>|<DIGIT>)*(<UNDERLINE>)+<DIGIT>(<LETTER>|<DIGIT>|<UNDERLINE>)* |
+        (<DIGIT>)+(<LETTER>|<DIGIT>|<UNDERLINE>)* |
         <UNDERLINE>(<LETTER>|<DIGIT>|<UNDERLINE>)*
     > {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid identifier", jjmatchedKind);}
 }
