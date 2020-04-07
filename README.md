@@ -10,7 +10,7 @@
 
   `$ java -jar kcompiler.jar`
 
-## Linguagem 2019-02
+## Linguagem 2020-01
 
 ### Palavras reservadas
 - DO
