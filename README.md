@@ -83,6 +83,10 @@
 - Ex.: h4_
 - Ex.: Ola__e
 
+### Comentários
+- \# Coméntário de linha
+- /\* Comentário de bloco \*/
+
 ## Recursos do software
 - Criar documentos com extensão (.txt)
 - Abrir documentos com extensão (.txt)

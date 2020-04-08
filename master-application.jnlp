@@ -11,8 +11,8 @@
     <!--${JNLP.UPDATE}-->
     <!--${JNLP.SECURITY}-->
     <resources>
-        ${JNLP.RESOURCES.RUNTIME}
-        ${JNLP.RESOURCES.MAIN.JAR}
+        <!--${JNLP.RESOURCES.RUNTIME}-->
+        <!--${JNLP.RESOURCES.MAIN.JAR}-->
         <!--${JNLP.RESOURCES.JARS}-->
         <!--${JNLP.RESOURCES.EXTENSIONS}-->
     </resources>
