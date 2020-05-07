@@ -33,7 +33,7 @@ public class KcompilerView extends javax.swing.JFrame {
                 try {
                     int caretpos = editArea.getCaretPosition();
                     linenum = editArea.getLineOfOffset(caretpos);
-                    columnnum = caretpos - editArea.getLineStartOffset(linenum);
+                    columnnum = caretpos - editArea.getLineStartOffset(linenum) + 1;
                     linenum += 1;
                 }
                 catch(Exception ex) { }
