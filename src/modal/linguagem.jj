@@ -14,9 +14,246 @@ public class Parser {
             token = getNextToken();
         }
     }
+    
+    public void syntaxAnalisys() throws ParseException {
+        program();
+    }
 }
 
 PARSER_END(Parser)
+
+void program(): {} {
+    <DO><THIS><IDENTIFIER><OPEN_BRACKET><CLOSE_BRACKET> declaracoes() <BODY><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> desc()
+}
+
+void declaracoes(): {} {
+    (<DECLARATION> declaracaoTipoEnumerado())?
+}
+
+void declaracaoTipoEnumerado(): {} {
+    <TYPE><OPEN_BRACKET> tipoEnumerado() <CLOSE_BRACKET> declaracaoConsteVar() | declaracaoConsteVar1()
+}
+
+void identificador(): {} {
+    <IDENTIFIER>
+}
+
+void identificadorVar(): {} {
+    identificador() indice()
+}
+
+void tipoEnumerado(): {} {
+    identificador() <IS> listaIdentificadores() <DOT> novoTipoEnumerado()
+}
+
+void novoTipoEnumerado(): {} {
+    (identificador() <IS> listaIdentificadores() <DOT> novoTipoEnumerado())?
+}
+
+void listaIdentificadores(): {} {
+    identificador() novoIdentificador()
+}
+
+void novoIdentificador(): {} {
+    (<COMMA> identificador() novoIdentificador())?
+}
+
+void listaIdentificadoresVar(): {} {
+    identificadorVar() novoIdentificadorVar()
+}
+
+void novoIdentificadorVar(): {} {
+    (<COMMA> identificadorVar() novoIdentificadorVar())?
+}
+
+void declaracaoConsteVar(): {} {
+    (<DECLARATION> declaracaoConsteVar1())?
+}
+
+void declaracaoConsteVar1(): {} {
+    (<CONSTANT><AND><VARIABLE><OPEN_BRACKET> declaraConstVar() <CLOSE_BRACKET>)?
+}
+
+void declaraConstVar(): {} {
+    <AS> declaraConstVar1()
+}
+
+void declaraConstVar1(): {} {
+    cons() | var()
+}
+
+void cons(): {} {
+    cons2() var1()
+}
+
+void cons1(): {} {
+    (<AS> cons2())?
+}
+
+void cons2(): {} {
+    <CONSTANT> listaCons()
+}
+
+void var(): {} {
+    var2() cons1()
+}
+
+void var1(): {} {
+    (<AS> var2())?
+}
+
+void var2(): {} {
+    <VARIABLE> listaVar()
+}
+
+void listaCons(): {} {
+    itemCons() novoItemCons()
+}
+
+void itemCons(): {} {
+    listaIdentificadores() <IS> tipo() <EQUAL> valor() <DOT>
+}
+
+void novoItemCons(): {} {
+    (itemCons() novoItemCons())?
+}
+
+void listaVar(): {} {
+    itemVar() novoItemVar()
+}
+
+void itemVar(): {} {
+    listaIdentificadoresVar() <IS> tipoVar() <DOT>
+}
+
+void novoItemVar(): {} {
+    (itemVar() novoItemVar())?
+}
+
+void tipo(): {} {
+    <INTEGER>|<REAL>|<STRING>|<LOGIC>
+}
+
+void tipoVar(): {} {
+    tipo() | identificadorVar()
+}
+
+void valor(): {} {
+    <NUMBER_INTEGER>|<NUMBER_REAL>|<LITERAL_CONSTANT>
+}
+
+void listaDeComandos(): {} {
+    (cmdAtribuicao() | cmdEntrada() | cmdSaida() | cmdRepeticao() | cmdSelecao() )?
+}
+
+void cmdAtribuicao(): {} {
+    <DESIGNATE><THIS> listaIdentificadores() <AS> expressao() <DOT> cmds()
+}
+
+void cmdEntrada(): {} {
+    <READ><THIS><OPEN_BRACKET> listaIdentificadoresVar() <CLOSE_BRACKET> <DOT> cmds()
+}
+
+void cmdSaida(): {} {
+    <WRITE> cmdSaidaCompleto() <THIS><OPEN_BRACKET> listaSaida() <CLOSE_BRACKET><DOT> cmds()
+}
+
+void cmdSaidaCompleto(): {} {
+    (<ALL>)?
+}
+
+void listaSaida(): {} {
+    identificadorSaida() novoIdentificadorSaida()
+}
+
+void novoIdentificadorSaida(): {} {
+    (<COMMA> identificadorSaida() novoIdentificadorSaida())?
+}
+
+void identificadorSaida(): {} {
+    identificadorVar() |<NUMBER_INTEGER>|<NUMBER_REAL>|<LITERAL_CONSTANT>
+}
+
+void cmdRepeticao(): {} {
+    <REPEAT><THIS> expressao() <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET><DOT> cmds()
+}
+
+void cmdSelecao(): {} {
+    <AVALIATE><THIS> expressao() cmdSelecaoOpc() <DOT> cmds()
+}
+
+void cmdSelecaoOpc(): {} {
+    cmdSelecaoVerdadeiro() | cmdSelecaoFalso()
+}
+
+void cmdSelecaoVerdadeiro(): {} {
+    <TRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> cmdSelecaoFalsoV()
+}
+
+void cmdSelecaoVerdadeiroF(): {} {
+    (<TRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>)?
+}
+
+void cmdSelecaoFalso(): {} {
+    <UNTRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> cmdSelecaoVerdadeiroF()
+}
+
+void cmdSelecaoFalsoV(): {} {
+    (<UNTRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>)?
+}
+
+void cmds(): {} {
+    (cmdAtribuicao() | cmdEntrada() | cmdSaida() | cmdRepeticao() | cmdSelecao())?
+}
+
+void expressao(): {} {
+    expressaoAritmeticaOuLogica() expressao1()
+}
+
+void expressao1(): {} {
+    ( <EQUALS> expressaoAritmeticaOuLogica() | 
+        <DIFFERENT> expressaoAritmeticaOuLogica() | 
+        <LESS> expressaoAritmeticaOuLogica() | 
+        <GREATER> expressaoAritmeticaOuLogica() | 
+        <LESS_EQUAL> expressaoAritmeticaOuLogica() |
+        <GREATER_EQUAL> expressaoAritmeticaOuLogica() )?
+}
+
+void expressaoAritmeticaOuLogica(): {} {
+    termo2() menorPrioridade()
+}
+
+void menorPrioridade(): {} {
+    (<PLUS> menorPrioridade() | <MINUS> menorPrioridade() | <PIPE> menorPrioridade())?
+}
+
+void termo2(): {} {
+    termo1() mediaPrioridade()
+}
+
+void mediaPrioridade(): {} {
+    (<MULTIPLY> mediaPrioridade() | <DIVIDER> mediaPrioridade() | <PERCENT> mediaPrioridade() | <MOD> mediaPrioridade() | <AMPERSAND> mediaPrioridade())?
+}
+
+void termo1(): {} {
+    elemento() maiorPrioridade()
+}
+
+void maiorPrioridade(): {} {
+    (<POW> elemento() maiorPrioridade())?
+}
+
+void elemento(): {} {
+    identificadorVar() |<NUMBER_INTEGER>|<NUMBER_REAL>|<LITERAL_CONSTANT>|<TRUE>|<UNTRUE>|<OPEN_PARENTHESIS> expressao() <CLOSE_PARENTHESIS>|<EXCLAMATION><OPEN_PARENTHESIS> expressao() <CLOSE_PARENTHESIS>
+}
+
+void indice(): {} {
+    (<OPEN_BRACKET><NUMBER_INTEGER><CLOSE_BRACKET>)?
+}
+
+void desc(): {} {
+    (<DESCRIPTION><LITERAL_CONSTANT>)? 
+}
 
 //Special characters ignored
 SKIP : {
