@@ -248,7 +248,7 @@ void elemento(): {} {
 }
 
 void indice(): {} {
-    (<OPEN_BRACKET><NUMBER_INTEGER><CLOSE_BRACKET>)?
+    (<OPEN_KEYS><NUMBER_INTEGER><CLOSE_KEYS>)?
 }
 
 void desc(): {} {
@@ -305,6 +305,8 @@ TOKEN [IGNORE_CASE]: {
 
 //Special symbol
 TOKEN : {
+    <OPEN_KEYS: "{"> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
+    <CLOSE_KEYS: "}"> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
     <OPEN_BRACKET: "["> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
     <CLOSE_BRACKET: "]"> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
     <OPEN_PARENTHESIS: "("> {OutputData.addOutputValid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Special symbol", jjmatchedKind);} |
@@ -370,7 +372,7 @@ TOKEN : {
 SPECIAL_TOKEN : {
     <#INEQUALITY_MINUS: ["<"]> |
     <#INEQUALITY_PLUS: [">"]> |
-    <INVALID_SIMBOLS: (~["a"-"z","A"-"Z","0"-"9","\"","[","]","(",")",",",".","=","!",">","<","+","-","_","*","&","/","%","|","\n","\r","\t"," "])+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid symbols", jjmatchedKind);} |
+    <INVALID_SIMBOLS: (~["a"-"z","A"-"Z","0"-"9","\"","{","}","[","]","(",")",",",".","=","!",">","<","+","-","_","*","&","/","%","|","\n","\r","\t"," "])+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid symbols", jjmatchedKind);} |
     <INVALID_INTEGER_NUMBER: <DIGIT>((<DIGIT>)?){2}(<DIGIT>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid integer number", jjmatchedKind);} |
     <INVALID_REAL_NUMBER: 
         <DIGIT>((<DIGIT>)?){4}<DOT> |
