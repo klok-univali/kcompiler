@@ -44,7 +44,8 @@ public class Semantic {
     
     public void Action03(String token){
         if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token)) {
-            // ERRO identificador já declarado
+            System.out.println("Identificador já declarado [ " + token + " ]");
+            erros.add("Identificador já declarado [ " + token + " ]");
         } else {
             tabelaTipoEnumerados.add( newTipoEnumerado(token, new ArrayList() ) );
         }
@@ -52,7 +53,6 @@ public class Semantic {
     
     public void Action04(String token){
         if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token)  ) {
-            // ERRO identificador já declarado
             System.out.println("identificador já declarado [acao04]: " + token);
             erros.add("identificador já declarado: " + token);
         } else {
@@ -140,7 +140,8 @@ public class Semantic {
     public void Action09(String token){
         if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) { 
             // ERRO identificador já declarado
-            System.out.println("identificador já declarado [acao09]: " + token);
+            System.out.println("identificador já declarado [" + token + "]");
+            erros.add("identificador já declarado [" + token + "]");
         } else {
             vt++;
             vp++;
@@ -152,8 +153,8 @@ public class Semantic {
       switch(contexto) {
         case "as variable":
           if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) {
-            // ERRO identificador já declarado
-            System.out.println("   já declarado [acao10]: " + token);
+            System.out.println("Identificador já declarado [" + token + "]");
+            erros.add("Identificador já declarado [" + token + "]");
           } else {
             variavelIndexada = false;
             variavelTmp = token;
@@ -193,20 +194,20 @@ public class Semantic {
               if (! variavelIndexada) {
                 listaAtributos.add(atr1);
               } else {
-                // ERRO “identificador de variável não indexada”
-                System.out.println("identificador de variável não indexada");
+                System.out.println("Identificador de variável não indexada");
+                erros.add("Identificador de variável não indexada");
               }
             } else {
               if (variavelIndexada) {
                 listaAtributos.add( Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1) );
               } else {
-                // ERRO “identificador de variável indexadaexige índice”
-                System.out.println("identificador de variável indexadaexige índice");
+                System.out.println("Identificador de variável indexadaexige índice");
+                erros.add("Identificador de variável indexadaexige índice");
               }
             }
           } else {
-            // ERRO “identificador não declarado ou identificador de programa, de constanteou de tipo enumerado”
-            System.out.println("identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
+            System.out.println("Identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
+            erros.add("Identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
           }
           break;
 
@@ -219,8 +220,8 @@ public class Semantic {
                 instrucoes.add( montaInstrucao(ponteiro, "STR", atr1) );
                 ponteiro++;
               } else {
-                // ERRO “identificador de variável não indexada”
-                System.out.println("identificador de variável não indexada");
+                System.out.println("Identificador de variável não indexada");
+                erros.add("Identificador de variável não indexada");
               }
             } else {
               if (variavelIndexada) {
@@ -229,13 +230,13 @@ public class Semantic {
                 instrucoes.add( montaInstrucao(ponteiro, "STR", Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)) );
                 ponteiro++;
               } else {
-                // ERRO “identificador de variável indexada exige índice”
-                System.out.println("identificador de variável indexada exige índice");
+                System.out.println("Identificador de variável indexada exige índice");
+                erros.add("Identificador de variável indexada exige índice");
               }
             }
           } else {
-            // ERRO “identificador não declarado ou identificador de programa, de constante ou de tipo enumerado”
-            System.out.println("identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
+            System.out.println("Identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
+            erros.add("Identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
           }
           break;
       }
@@ -245,7 +246,8 @@ public class Semantic {
         constanteTmp = Integer.parseInt(token);
         variavelIndexada = true;
     }
-  // tipo inteiro
+    
+    // tipo inteiro
     public void Action13(){
       if(contexto.equals("as variable")){
         tipo = 1;
@@ -253,6 +255,7 @@ public class Semantic {
         tipo = 5;
       }
     }
+    
     // tipo real
     public void Action14(){
       if(contexto.equals("as variable")){
@@ -262,6 +265,7 @@ public class Semantic {
       }
       
     }
+    
     // tipo literal
     public void Action15(){      
       if(contexto.equals("as variable")){
@@ -270,24 +274,27 @@ public class Semantic {
         tipo = 7;
       }
     }
+    
     // tipo lógico
     public void Action16(){
       if(contexto.equals("as variable")){
         tipo = 4;
       } else {
-         // ERRO “tipo inválido para constante”
-         System.out.println("tipo invalido para constante");
+         System.out.println("Tipo invalido para constante");
+         erros.add("Tipo invalido para constante");
       }
     }
+    
     // tipo enumerado
     public void Action17(){
       if(contexto.equals("as variable")){
         tipo = 1;
       } else {
-         // ERRO “tipo inválido para constante”
-         System.out.println("tipo invalido para constante");
+         System.out.println("Tipo invalido para constante");
+         erros.add("Tipo invalido para constante");
       }
     }
+    
     public void Action18(){
       contexto = "atribuição";
     }
@@ -321,8 +328,8 @@ public class Semantic {
         variavelIndexada = false;
         variavelTmp = token;
       } else {
-        // ERRO “identificador não declarado, identificador de programaou de tipo enumerado”
-        System.out.println("identificador não declarado, identificador de programaou de tipo enumerado");
+        System.out.println("Identificador não declarado, identificador de programaou de tipo enumerado");
+        erros.add("Identificador não declarado, identificador de programaou de tipo enumerado");
       }
     }
 
@@ -344,9 +351,8 @@ public class Semantic {
           instrucoes.add(montaInstrucao(ponteiro,"LDV",atr1));
           ponteiro++;
         } else {
-          // ERRO: identificador era  de uma variável indexada,
-          // mas não foi mandado indice”
-          System.out.println("identificador de variável indexada exige índice ");
+          System.out.println("Identificador era de uma variavel indexada, mas não foi mandado indice");
+          erros.add("Identificador era de uma variavel indexada, mas não foi mandado indice");
         }        
       } else if (atr2 != "-") {
         if(saida.equals("write all this")){
@@ -358,9 +364,8 @@ public class Semantic {
           instrucoes.add(montaInstrucao(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
           ponteiro++;
         } else {
-          // ERRO: identificador era  de uma variável não indexada,
-          // ou de uma constante”
-          System.out.println("identificador de constante ou de variável não indexada ");
+          System.out.println("Identificador era de uma variavel nao indexada, ou de uma constante");
+          erros.add("Identificador era de uma variavel nao indexada, ou de uma constante");
         }        
     }
     
@@ -519,16 +524,15 @@ public class Semantic {
         instrucoes.add(montaInstrucao(ponteiro,"LDV",atr1));
         ponteiro++;
       } else {
-        //erro, identificador de uma variavel indexada e não foi passado indice
-        System.out.println("identificador de variável indexada exige índice");
+        System.out.println("Identificador de variável indexada exige índice");
+        erros.add("Identificador de variável indexada exige índice");
       }
     } else if (atr2 != "-") {
         instrucoes.add(montaInstrucao(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
         ponteiro++;
     } else {
-        // ERRO: identificador era  de uma variável não indexada,
-        // ou de uma constante”
-        System.out.println("identificador de constante ou de variável não indexada ");
+        System.out.println("Identificador de constante ou de variável não indexada ");
+        erros.add("Identificador de constante ou de variável não indexada");
     }        
   }
     
