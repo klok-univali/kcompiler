@@ -5,6 +5,7 @@
 package modal;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 
 public class SyntacticParser {
     private static SyntacticParser instance = null;
@@ -22,8 +23,15 @@ public class SyntacticParser {
         Parser parser = new Parser(new StringReader(text));
         StringBuilder output = new StringBuilder();
         try {
-            parser.syntaxAnalisys();
-            output.append("Success !");
+            ArrayList<String> erros = parser.syntaxAnalisys();
+            
+            if (erros.size() > 0) {
+                for (String erro : erros) {
+                    output.append(erro + "\n");
+                }
+            } else {
+                output.append("Success !");
+            }
         } catch (Exception e) {
             output.append(e.getMessage());
         }

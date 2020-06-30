@@ -171,18 +171,6 @@ public class KcompilerController {
                 
                 tokensValid = OutputData.getValid();
                 tokensInvalid = OutputData.getInvalid();
-                
-//                if (tokensInvalid.isEmpty()) {
-//                    outputTmp += "Compilation success! See tokens:\n";
-//                    for (String string : tokensValid) {
-//                        outputTmp += string + '\n';
-//                    }
-//                } else { 
-//                    outputTmp += "Compilation failed! See errors:\n";
-//                    for (String string : tokensInvalid) {
-//                        outputTmp += string + '\n';
-//                    }
-//                }
 
                 if (tokensInvalid.isEmpty()) {                           
                     SyntacticParser syntactic = SyntacticParser.getInstance();

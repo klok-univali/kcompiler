@@ -18,9 +18,10 @@ public class Parser {
         }
     }
     
-    public void syntaxAnalisys() throws ParseException {
+    public ArrayList syntaxAnalisys() throws ParseException {
         semantic = new Semantic();
         programa();
+        return semantic.getErros();
     }
 }
 
@@ -76,11 +77,11 @@ void constantesEVariaveis1(): {} {
 }
 
 void declaracaoDeConstantes(): {} {
-    <CONSTANT> {semantic.Action05(token.image);} constantes()
+    <CONSTANT> {semantic.Action05();} constantes()
 }
 
 void constantes(): {} {
-    listaDeIdentificadoresDeConstantes() <IS> tipo() {semantic.Action06(token.image);} <EQUAL> valor() {semantic.Action07(token.image);} <DOT> constantes1()
+    listaDeIdentificadoresDeConstantes() <IS> tipo() {semantic.Action06();} <EQUAL> valor() {semantic.Action07(token.image);} <DOT> constantes1()
 }
 
 void constantes1(): {} {
@@ -96,7 +97,7 @@ void declaracaoDeVariaveis(): {} {
 }
 
 void variaveis(): {} {
-    listaDeIdentificadoresDeVariaveis() <IS> tipo() {semantic.Action06(token.image);} <DOT> variaveis1()
+    listaDeIdentificadoresDeVariaveis() <IS> tipo() {semantic.Action06();} <DOT> variaveis1()
 }
 
 void variaveis1(): {} {
@@ -128,7 +129,7 @@ void indice(): {} {
 }
 
 void tipo(): {} {
-    <INTEGER> {semantic.Action13(token.image);} | <REAL> {semantic.Action14(token.image);} | <STRING> {semantic.Action15(token.image);} | <LOGIC> {semantic.Action16(token.image);} | <IDENTIFIER> {semantic.Action17(token.image);}
+    <INTEGER> {semantic.Action13();} | <REAL> {semantic.Action14();} | <STRING> {semantic.Action15();} | <LOGIC> {semantic.Action16();} | <IDENTIFIER> {semantic.Action17();}
 }
 
 void valor(): {} {
@@ -152,11 +153,11 @@ void comando(): {} {
 }
 
 void atribuicao(): {} {
-    <DESIGNATE><THIS> {semantic.Action18(token.image);} listaDeIdentificadoresDeVariaveis() <AS> expressao() {semantic.Action19(token.image);} <DOT>
+    <DESIGNATE><THIS> {semantic.Action18();} listaDeIdentificadoresDeVariaveis() <AS> expressao() {semantic.Action19();} <DOT>
 }
 
 void entrada(): {} {
-    <READ><THIS> {semantic.Action20(token.image);} <OPEN_BRACKET> listaDeIdentificadoresDeVariaveis() <CLOSE_BRACKET><DOT>
+    <READ><THIS> {semantic.Action20();} <OPEN_BRACKET> listaDeIdentificadoresDeVariaveis() <CLOSE_BRACKET><DOT>
 }
 
 void saida(): {} {
@@ -164,11 +165,11 @@ void saida(): {} {
 }
 
 void saida1(): {} {
-    <ALL><THIS> {semantic.Action21(token.image);} <OPEN_BRACKET> listaDeIdentificadoresEOuConstantes() <CLOSE_BRACKET><DOT> | <THIS> {semantic.Action22(token.image);} <OPEN_BRACKET> listaDeIdentificadoresEOuConstantes() <CLOSE_BRACKET><DOT>
+    <ALL><THIS> {semantic.Action21();} <OPEN_BRACKET> listaDeIdentificadoresEOuConstantes() <CLOSE_BRACKET><DOT> | <THIS> {semantic.Action22();} <OPEN_BRACKET> listaDeIdentificadoresEOuConstantes() <CLOSE_BRACKET><DOT>
 }
 
 void listaDeIdentificadoresEOuConstantes(): {} {
-    item() {semantic.Action23(token.image);} listaDeIdentificadoresEOuConstantes1()
+    item() {semantic.Action23();} listaDeIdentificadoresEOuConstantes1()
 }
 
 void listaDeIdentificadoresEOuConstantes1(): {} {
@@ -180,11 +181,11 @@ void item(): {} {
 }
 
 void selecao(): {} {
-    <AVALIATE><THIS> expressao() selecao1() {semantic.Action29(token.image);}
+    <AVALIATE><THIS> expressao() selecao1() {semantic.Action29();}
 }
 
 void selecao1(): {} {
-    <TRUE><RESULT> {semantic.Action30(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> falsa() <DOT> | <UNTRUE><RESULT> {semantic.Action31(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> verdadeira() <DOT>
+    <TRUE><RESULT> {semantic.Action30();} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> falsa() <DOT> | <UNTRUE><RESULT> {semantic.Action31();} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> verdadeira() <DOT>
 }
 
 void verdadeira(): {} {
