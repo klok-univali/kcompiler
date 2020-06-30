@@ -53,8 +53,8 @@ public class Semantic {
     
     public void Action04(String token){
         if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token)  ) {
-            System.out.println("identificador já declarado [acao04]: " + token);
-            erros.add("identificador já declarado: " + token);
+            System.out.println("identificador já declarado [" + token + "]");
+            erros.add("identificador já declarado [" + token + "]");
         } else {
             ArrayList tmp = tabelaTipoEnumerados.get(tabelaTipoEnumerados.size()-1);
             ArrayList tmp2 = (ArrayList) tmp.get(1);
@@ -388,7 +388,7 @@ public class Semantic {
       int n = (int) pilhaDesvios.pop();
       ArrayList temp = recuperaInstrucao(n);
       //atualiza endereço da instrução
-      temp.set(3, Integer.toString(ponteiro));
+      temp.set(2, Integer.toString(ponteiro));
       atualizaInstrucao(temp);
 
     }
@@ -409,7 +409,7 @@ public class Semantic {
       int n = (int) pilhaDesvios.pop();
       ArrayList temp = recuperaInstrucao(n);
       //atualiza endereço da instrução
-      temp.set(3, Integer.toString(ponteiro));
+      temp.set(2, Integer.toString(ponteiro));
       atualizaInstrucao(temp);
       instrucoes.add(montaInstrucao(ponteiro, "JMP", "?"));
       ponteiro++;
@@ -430,7 +430,7 @@ public class Semantic {
       int n = (int) pilhaDesvios.pop();
       ArrayList temp = recuperaInstrucao(n);
       //atualiza endereço da instrução
-      temp.set(3, Integer.toString(ponteiro + 1));
+      temp.set(2, Integer.toString(ponteiro + 1));
       atualizaInstrucao(temp);
       n = (int) pilhaDesvios.pop();
       instrucoes.add(montaInstrucao(ponteiro, "JMP", Integer.toString(n)));
