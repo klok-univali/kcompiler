@@ -5,10 +5,13 @@ options {
 PARSER_BEGIN(Parser)
 
 public class Parser {
+    public static Semantic semantic;
+
     public Parser(){}
 
     public void execute() throws ParseException {
         Token token = getNextToken();
+        
         
         while(token.kind != 0){
             token = getNextToken();
@@ -16,194 +19,184 @@ public class Parser {
     }
     
     public void syntaxAnalisys() throws ParseException {
-        program();
+        semantic = new Semantic();
+        programa();
     }
 }
 
 PARSER_END(Parser)
 
-void program(): {} {
-    <DO><THIS><IDENTIFIER><OPEN_BRACKET><CLOSE_BRACKET> declaracoes() <BODY><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> desc()
+
+void programa(): {} {
+    <DO><THIS><IDENTIFIER> {semantic.Action01(token.image);} <OPEN_BRACKET><CLOSE_BRACKET> declaracao() corpoDoPrograma() comentario() {semantic.Action02(token.image);}
 }
 
-void declaracoes(): {} {
-    (<DECLARATION> declaracaoTipoEnumerado())?
+void comentario(): {} {
+    (<DESCRIPTION><LITERAL_CONSTANT>)?
 }
 
-void declaracaoTipoEnumerado(): {} {
-    <TYPE><OPEN_BRACKET> tipoEnumerado() <CLOSE_BRACKET> declaracaoConsteVar() | declaracaoConsteVar1()
+void declaracao(): {} {
+    (<DECLARATION> declaracao1())?
 }
 
-void identificador(): {} {
-    <IDENTIFIER>
+void declaracao1(): {} {
+    <TYPE><OPEN_BRACKET> declaracaoDeTipoEnumerado() <CLOSE_BRACKET> declaracao2() | declaracaoDeConstantesEVariaveis()
 }
 
-void identificadorVar(): {} {
-    identificador() indice()
+void declaracao2(): {} {
+    (<DECLARATION> declaracaoDeConstantesEVariaveis())?
 }
 
-void tipoEnumerado(): {} {
-    identificador() <IS> listaIdentificadores() <DOT> novoTipoEnumerado()
+void declaracaoDeTipoEnumerado(): {} {
+    <IDENTIFIER> {semantic.Action03(token.image);} <IS> listaDeIdentificadoresDeConstantesTipoEnumerado() <DOT> declaracaoDeTipoEnumerado1()
 }
 
-void novoTipoEnumerado(): {} {
-    (identificador() <IS> listaIdentificadores() <DOT> novoTipoEnumerado())?
+void declaracaoDeTipoEnumerado1(): {} {
+    (declaracaoDeTipoEnumerado())?
 }
 
-void listaIdentificadores(): {} {
-    identificador() novoIdentificador()
+void listaDeIdentificadoresDeConstantesTipoEnumerado(): {} {
+    <IDENTIFIER> {semantic.Action04(token.image);} listaDeIdentificadoresDeConstantesTipoEnumerado1()
 }
 
-void novoIdentificador(): {} {
-    (<COMMA> identificador() novoIdentificador())?
+void listaDeIdentificadoresDeConstantesTipoEnumerado1(): {} {
+    (<COMMA> listaDeIdentificadoresDeConstantesTipoEnumerado())?
 }
 
-void listaIdentificadoresVar(): {} {
-    identificadorVar() novoIdentificadorVar()
+void declaracaoDeConstantesEVariaveis(): {} {
+    <CONSTANT><AND><VARIABLE><OPEN_BRACKET> constantesEVariaveis() <CLOSE_BRACKET>
 }
 
-void novoIdentificadorVar(): {} {
-    (<COMMA> identificadorVar() novoIdentificadorVar())?
+void constantesEVariaveis(): {} {
+    <AS> constantesEVariaveis1()
 }
 
-void declaracaoConsteVar(): {} {
-    (<DECLARATION> declaracaoConsteVar1())?
+void constantesEVariaveis1(): {} {
+    declaracaoDeConstantes() variaveis2() | declaracaoDeVariaveis() constantes2()
 }
 
-void declaracaoConsteVar1(): {} {
-    (<CONSTANT><AND><VARIABLE><OPEN_BRACKET> declaraConstVar() <CLOSE_BRACKET>)?
+void declaracaoDeConstantes(): {} {
+    <CONSTANT> {semantic.Action05(token.image);} constantes()
 }
 
-void declaraConstVar(): {} {
-    <AS> declaraConstVar1()
+void constantes(): {} {
+    listaDeIdentificadoresDeConstantes() <IS> tipo() {semantic.Action06(token.image);} <EQUAL> valor() {semantic.Action07(token.image);} <DOT> constantes1()
 }
 
-void declaraConstVar1(): {} {
-    cons() | var()
+void constantes1(): {} {
+    (constantes())?
 }
 
-void cons(): {} {
-    cons2() var1()
+void constantes2(): {} {
+    (<AS> declaracaoDeConstantes())?
 }
 
-void cons1(): {} {
-    (<AS> cons2())?
+void declaracaoDeVariaveis(): {} {
+    <VARIABLE> {semantic.Action08(token.image);} variaveis()
 }
 
-void cons2(): {} {
-    <CONSTANT> listaCons()
+void variaveis(): {} {
+    listaDeIdentificadoresDeVariaveis() <IS> tipo() {semantic.Action06(token.image);} <DOT> variaveis1()
 }
 
-void var(): {} {
-    var2() cons1()
+void variaveis1(): {} {
+    (variaveis())?
 }
 
-void var1(): {} {
-    (<AS> var2())?
+void variaveis2(): {} {
+    (<AS> declaracaoDeVariaveis())?
 }
 
-void var2(): {} {
-    <VARIABLE> listaVar()
+void listaDeIdentificadoresDeConstantes(): {} {
+    <IDENTIFIER> {semantic.Action09(token.image);} listaDeIdentificadoresDeConstantes1()
 }
 
-void listaCons(): {} {
-    itemCons() novoItemCons()
+void listaDeIdentificadoresDeConstantes1(): {} {
+    (<COMMA> listaDeIdentificadoresDeConstantes())?
 }
 
-void itemCons(): {} {
-    listaIdentificadores() <IS> tipo() <EQUAL> valor() <DOT>
+void listaDeIdentificadoresDeVariaveis(): {} {
+    <IDENTIFIER> {semantic.Action10(token.image);} indice() {semantic.Action11(token.image);} listaDeIdentificadoresDeVariaveis1()
 }
 
-void novoItemCons(): {} {
-    (itemCons() novoItemCons())?
+void listaDeIdentificadoresDeVariaveis1(): {} {
+    (<COMMA> listaDeIdentificadoresDeVariaveis())?
 }
 
-void listaVar(): {} {
-    itemVar() novoItemVar()
-}
-
-void itemVar(): {} {
-    listaIdentificadoresVar() <IS> tipoVar() <DOT>
-}
-
-void novoItemVar(): {} {
-    (itemVar() novoItemVar())?
+void indice(): {} {
+    (<OPEN_KEYS><NUMBER_INTEGER> {semantic.Action12(token.image);} <CLOSE_KEYS>)?
 }
 
 void tipo(): {} {
-    <INTEGER>|<REAL>|<STRING>|<LOGIC>
-}
-
-void tipoVar(): {} {
-    tipo() | identificadorVar()
+    <INTEGER> {semantic.Action13(token.image);} | <REAL> {semantic.Action14(token.image);} | <STRING> {semantic.Action15(token.image);} | <LOGIC> {semantic.Action16(token.image);} | <IDENTIFIER> {semantic.Action17(token.image);}
 }
 
 void valor(): {} {
-    <NUMBER_INTEGER>|<NUMBER_REAL>|<LITERAL_CONSTANT>
+    <NUMBER_INTEGER> | <NUMBER_REAL> | <LITERAL_CONSTANT>
+}
+
+void corpoDoPrograma(): {} {
+    <BODY><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>
 }
 
 void listaDeComandos(): {} {
-    (cmdAtribuicao() | cmdEntrada() | cmdSaida() | cmdRepeticao() | cmdSelecao() )?
+    comando() listaDeComandos1()
 }
 
-void cmdAtribuicao(): {} {
-    <DESIGNATE><THIS> listaIdentificadores() <AS> expressao() <DOT> cmds()
+void listaDeComandos1(): {} {
+    (listaDeComandos())?
 }
 
-void cmdEntrada(): {} {
-    <READ><THIS><OPEN_BRACKET> listaIdentificadoresVar() <CLOSE_BRACKET> <DOT> cmds()
+void comando(): {} {
+    atribuicao() | entrada() | saida() | selecao() | repeticao()
 }
 
-void cmdSaida(): {} {
-    <WRITE> cmdSaidaCompleto() <THIS><OPEN_BRACKET> listaSaida() <CLOSE_BRACKET><DOT> cmds()
+void atribuicao(): {} {
+    <DESIGNATE><THIS> {semantic.Action18(token.image);} listaDeIdentificadoresDeVariaveis() <AS> expressao() {semantic.Action19(token.image);} <DOT>
 }
 
-void cmdSaidaCompleto(): {} {
-    (<ALL>)?
+void entrada(): {} {
+    <READ><THIS> {semantic.Action20(token.image);} <OPEN_BRACKET> listaDeIdentificadoresDeVariaveis() <CLOSE_BRACKET><DOT>
 }
 
-void listaSaida(): {} {
-    identificadorSaida() novoIdentificadorSaida()
+void saida(): {} {
+    <WRITE> saida1()
 }
 
-void novoIdentificadorSaida(): {} {
-    (<COMMA> identificadorSaida() novoIdentificadorSaida())?
+void saida1(): {} {
+    <ALL><THIS> {semantic.Action21(token.image);} <OPEN_BRACKET> listaDeIdentificadoresEOuConstantes() <CLOSE_BRACKET><DOT> | <THIS> {semantic.Action22(token.image);} <OPEN_BRACKET> listaDeIdentificadoresEOuConstantes() <CLOSE_BRACKET><DOT>
 }
 
-void identificadorSaida(): {} {
-    identificadorVar() |<NUMBER_INTEGER>|<NUMBER_REAL>|<LITERAL_CONSTANT>
+void listaDeIdentificadoresEOuConstantes(): {} {
+    item() {semantic.Action23(token.image);} listaDeIdentificadoresEOuConstantes1()
 }
 
-void cmdRepeticao(): {} {
-    <REPEAT><THIS> expressao() <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET><DOT> cmds()
+void listaDeIdentificadoresEOuConstantes1(): {} {
+    (<COMMA> listaDeIdentificadoresEOuConstantes())?
 }
 
-void cmdSelecao(): {} {
-    <AVALIATE><THIS> expressao() cmdSelecaoOpc() <DOT> cmds()
+void item(): {} {
+    <IDENTIFIER> {semantic.Action24(token.image);} indice() {semantic.Action25(token.image);} | <NUMBER_INTEGER> {semantic.Action26(token.image);} | <NUMBER_REAL> {semantic.Action27(token.image);} | <LITERAL_CONSTANT> {semantic.Action28(token.image);}
 }
 
-void cmdSelecaoOpc(): {} {
-    cmdSelecaoVerdadeiro() | cmdSelecaoFalso()
+void selecao(): {} {
+    <AVALIATE><THIS> expressao() selecao1() {semantic.Action29(token.image);}
 }
 
-void cmdSelecaoVerdadeiro(): {} {
-    <TRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> cmdSelecaoFalsoV()
+void selecao1(): {} {
+    <TRUE><RESULT> {semantic.Action30(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> falsa() <DOT> | <UNTRUE><RESULT> {semantic.Action31(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> verdadeira() <DOT>
 }
 
-void cmdSelecaoVerdadeiroF(): {} {
-    (<TRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>)?
+void verdadeira(): {} {
+    (<TRUE><RESULT> {semantic.Action32(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>)?
 }
 
-void cmdSelecaoFalso(): {} {
-    <UNTRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> cmdSelecaoVerdadeiroF()
+void falsa(): {} {
+    (<UNTRUE><RESULT> {semantic.Action32(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>)?
 }
 
-void cmdSelecaoFalsoV(): {} {
-    (<UNTRUE><RESULT><OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET>)?
-}
-
-void cmds(): {} {
-    (cmdAtribuicao() | cmdEntrada() | cmdSaida() | cmdRepeticao() | cmdSelecao())?
+void repeticao(): {} {
+    <REPEAT><THIS> {semantic.Action33(token.image);} expressao() {semantic.Action34(token.image);} <OPEN_BRACKET> listaDeComandos() <CLOSE_BRACKET> {semantic.Action35(token.image);} <DOT>
 }
 
 void expressao(): {} {
@@ -211,12 +204,7 @@ void expressao(): {} {
 }
 
 void expressao1(): {} {
-    ( <EQUALS> expressaoAritmeticaOuLogica() | 
-        <DIFFERENT> expressaoAritmeticaOuLogica() | 
-        <LESS> expressaoAritmeticaOuLogica() | 
-        <GREATER> expressaoAritmeticaOuLogica() | 
-        <LESS_EQUAL> expressaoAritmeticaOuLogica() |
-        <GREATER_EQUAL> expressaoAritmeticaOuLogica() )?
+    ( <EQUALS> expressaoAritmeticaOuLogica() {semantic.Action36();} | <DIFFERENT> expressaoAritmeticaOuLogica() {semantic.Action37();} | <LESS> expressaoAritmeticaOuLogica() {semantic.Action38();} | <GREATER> expressaoAritmeticaOuLogica() {semantic.Action39();} | <LESS_EQUAL> expressaoAritmeticaOuLogica() {semantic.Action40();} | <GREATER_EQUAL> expressaoAritmeticaOuLogica() {semantic.Action41();} )?
 }
 
 void expressaoAritmeticaOuLogica(): {} {
@@ -224,7 +212,7 @@ void expressaoAritmeticaOuLogica(): {} {
 }
 
 void menorPrioridade(): {} {
-    (<PLUS> menorPrioridade() | <MINUS> menorPrioridade() | <PIPE> menorPrioridade())?
+    ( <PLUS> termo2() menorPrioridade() {semantic.Action42();} | <MINUS> termo2() menorPrioridade() {semantic.Action43();} | <PIPE> termo2() menorPrioridade() {semantic.Action44();} )?
 }
 
 void termo2(): {} {
@@ -232,7 +220,7 @@ void termo2(): {} {
 }
 
 void mediaPrioridade(): {} {
-    (<MULTIPLY> mediaPrioridade() | <DIVIDER> mediaPrioridade() | <PERCENT> mediaPrioridade() | <MOD> mediaPrioridade() | <AMPERSAND> mediaPrioridade())?
+    ( <MULTIPLY> termo1() mediaPrioridade() {semantic.Action45();} | <DIVIDER> termo1() mediaPrioridade() {semantic.Action46();} | <PERCENT> termo1() mediaPrioridade() {semantic.Action47();} | <MOD> termo1() mediaPrioridade() {semantic.Action48();} | <AMPERSAND> termo1() mediaPrioridade() {semantic.Action49();} )?
 }
 
 void termo1(): {} {
@@ -240,20 +228,13 @@ void termo1(): {} {
 }
 
 void maiorPrioridade(): {} {
-    (<POW> elemento() maiorPrioridade())?
+    (<POW> elemento() maiorPrioridade() {semantic.Action50();})?
 }
 
 void elemento(): {} {
-    identificadorVar() |<NUMBER_INTEGER>|<NUMBER_REAL>|<LITERAL_CONSTANT>|<TRUE>|<UNTRUE>|<OPEN_PARENTHESIS> expressao() <CLOSE_PARENTHESIS>|<EXCLAMATION><OPEN_PARENTHESIS> expressao() <CLOSE_PARENTHESIS>
+    <IDENTIFIER> {semantic.Action24(token.image);} indice() {semantic.Action51();} | <NUMBER_INTEGER> {semantic.Action26(token.image);} | <NUMBER_REAL> {semantic.Action27(token.image);} | <LITERAL_CONSTANT> {semantic.Action28(token.image);} | <TRUE> {semantic.Action52();} | <UNTRUE> {semantic.Action53();} | <OPEN_PARENTHESIS> expressao() <CLOSE_PARENTHESIS> | <EXCLAMATION><OPEN_PARENTHESIS> expressao() <CLOSE_PARENTHESIS> {semantic.Action54();}
 }
 
-void indice(): {} {
-    (<OPEN_KEYS><NUMBER_INTEGER><CLOSE_KEYS>)?
-}
-
-void desc(): {} {
-    (<DESCRIPTION><LITERAL_CONSTANT>)? 
-}
 
 //Special characters ignored
 SKIP : {
@@ -375,7 +356,7 @@ SPECIAL_TOKEN : {
     <INVALID_SIMBOLS: (~["a"-"z","A"-"Z","0"-"9","\"","{","}","[","]","(",")",",",".","=","!",">","<","+","-","_","*","&","/","%","|","\n","\r","\t"," "])+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid symbols", jjmatchedKind);} |
     <INVALID_INTEGER_NUMBER: <DIGIT>((<DIGIT>)?){2}(<DIGIT>)+> {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid integer number", jjmatchedKind);} |
     <INVALID_REAL_NUMBER: 
-        <DIGIT>((<DIGIT>)?){4}<DOT> |
+        <DIGIT>((<DIGIT>)?){4} |
         <DIGIT>((<DIGIT>)?){4}(<DIGIT>)+<DOT><DIGIT>((<DIGIT>){2})(<DIGIT>)+ |
         <DOT>(<DIGIT>)+
     > {OutputData.addOutputInvalid(image.toString(), input_stream.getEndLine(), input_stream.getBeginColumn(), "Invalid real number", jjmatchedKind);} |
