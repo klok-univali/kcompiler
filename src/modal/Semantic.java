@@ -201,13 +201,13 @@ public class Semantic {
               if (variavelIndexada) {
                 listaAtributos.add( Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1) );
               } else {
-                System.out.println("Identificador de variável indexadaexige índice");
-                erros.add("Identificador de variável indexadaexige índice");
+                System.out.println("Identificador de variável indexada exige índice");
+                erros.add("Identificador de variável indexada exige índice");
               }
             }
           } else {
-            System.out.println("Identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
-            erros.add("Identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
+            System.out.println("Identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
+            erros.add("Identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
           }
           break;
 
@@ -328,8 +328,8 @@ public class Semantic {
         variavelIndexada = false;
         variavelTmp = token;
       } else {
-        System.out.println("Identificador não declarado, identificador de programaou de tipo enumerado");
-        erros.add("Identificador não declarado, identificador de programaou de tipo enumerado");
+        System.out.println("Identificador não declarado, identificador de programa ou de tipo enumerado");
+        erros.add("Identificador não declarado, identificador de programa ou de tipo enumerado");
       }
     }
 
