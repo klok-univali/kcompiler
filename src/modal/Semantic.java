@@ -53,8 +53,8 @@ public class Semantic {
     
     public void Action04(String token){
         if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token)  ) {
-            System.out.println("identificador já declarado [" + token + "]");
-            erros.add("identificador já declarado [" + token + "]");
+            System.out.println("Identificador já declarado [" + token + "]");
+            erros.add("Identificador já declarado [" + token + "]");
         } else {
             ArrayList tmp = tabelaTipoEnumerados.get(tabelaTipoEnumerados.size()-1);
             ArrayList tmp2 = (ArrayList) tmp.get(1);
@@ -140,8 +140,8 @@ public class Semantic {
     public void Action09(String token){
         if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) { 
             // ERRO identificador já declarado
-            System.out.println("identificador já declarado [" + token + "]");
-            erros.add("identificador já declarado [" + token + "]");
+            System.out.println("Identificador já declarado [" + token + "]");
+            erros.add("Identificador já declarado [" + token + "]");
         } else {
             vt++;
             vp++;
@@ -190,7 +190,7 @@ public class Semantic {
 
         case "atribuicao":
           if ( existeTabelaSimbolos(token) && identificadorDeVariavel(token) ) {
-            if (atr2 == "-") {
+            if (atr2.equals("-")) {
               if (! variavelIndexada) {
                 listaAtributos.add(atr1);
               } else {
@@ -213,7 +213,7 @@ public class Semantic {
 
         case "entrada dados":
           if ( existeTabelaSimbolos(token) && identificadorDeVariavel(token) ) {
-            if (atr2 == "-") {
+            if (atr2.equals("-")) {
               if ( ! variavelIndexada ) {
                 instrucoes.add( montaInstrucao(ponteiro, "REA", Integer.toString(categoriaTmp)) );
                 ponteiro++;
@@ -296,7 +296,7 @@ public class Semantic {
     }
     
     public void Action18(){
-      contexto = "atribuição";
+      contexto = "atribuicao";
     }
     
     public void Action19(){
@@ -341,7 +341,7 @@ public class Semantic {
         }
       }
       if(!variavelIndexada){
-        if(atr2 == "-"){
+        if(atr2.equals("-")){
           if(saida.equals("write all this")){
             instrucoes.add(montaInstrucao(ponteiro,"LDS", variavelTmp + " = "));
             ponteiro++;
@@ -354,7 +354,7 @@ public class Semantic {
           System.out.println("Identificador era de uma variavel indexada, mas não foi mandado indice");
           erros.add("Identificador era de uma variavel indexada, mas não foi mandado indice");
         }        
-      } else if (atr2 != "-") {
+      } else if (atr2.equals("-")) {
         if(saida.equals("write all this")){
             instrucoes.add(montaInstrucao(ponteiro,"LDS", variavelTmp + " = "));
             ponteiro++;
@@ -520,14 +520,14 @@ public class Semantic {
       }
     }
     if(!variavelIndexada){
-      if(atr2 == "-"){
+      if(atr2.equals("-")){
         instrucoes.add(montaInstrucao(ponteiro,"LDV",atr1));
         ponteiro++;
       } else {
         System.out.println("Identificador de variável indexada exige índice");
         erros.add("Identificador de variável indexada exige índice");
       }
-    } else if (atr2 != "-") {
+    } else if (atr2.equals("-")) {
         instrucoes.add(montaInstrucao(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
         ponteiro++;
     } else {
@@ -599,36 +599,42 @@ public class Semantic {
   }
   
   private boolean existeTabelaSimbolos(String token) {
-      for (ArrayList tabelaSimbolo : tabelaSimbolos) {
-          if (tabelaSimbolo.get(0).equals(token)) {
-              return true;
-          }
-      }
-      return false;
+    if (! tabelaSimbolos.isEmpty()) {
+        for (ArrayList tabelaSimbolo : tabelaSimbolos) {
+            if (tabelaSimbolo.get(0).equals(token)) {
+                return true;
+            }
+        }
+    }
+    return false;
   }
   
   private boolean existeTabelaTipoEnumerado(String token) {
-      for (ArrayList tabelaTipoEnumerado : tabelaTipoEnumerados) {
-          if (tabelaTipoEnumerado.get(0).equals(token)) {
-              return true;
-          }
+      if (! tabelaTipoEnumerados.isEmpty()) {
+        for (ArrayList tabelaTipoEnumerado : tabelaTipoEnumerados) {
+            if (tabelaTipoEnumerado.get(0).equals(token)) {
+                return true;
+            }
+        }
       }
       return false;
   }
   
   private boolean existeIdentificadoresConstantesTipoEnumerado(String token) {
-      ArrayList tipoEnum = tabelaTipoEnumerados.get(tabelaTipoEnumerados.size()-1);
-      ArrayList idEnum = (ArrayList) tipoEnum.get(1);
+      if (! tabelaTipoEnumerados.isEmpty()) {
+        ArrayList tipoEnum = tabelaTipoEnumerados.get(tabelaTipoEnumerados.size()-1);
+        ArrayList idEnum = (ArrayList) tipoEnum.get(1);
+
+        if (idEnum.size() > 0) {
+            for (Object object : idEnum) {
+                if (object.equals(token) ) {
+                    return true;
+                }
+            }
+        }
+     }
       
-      if (idEnum.size() > 0) {
-          for (Object object : idEnum) {
-              if (object.equals(token) ) {
-                  return true;
-              }
-          }
-      }
-      
-      return false;
+     return false;
   }
 
   private void setCategoriaSimbolo(int tipo, int i) {
