@@ -6,6 +6,7 @@
 package modal;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -13,10 +14,10 @@ import java.util.Stack;
  * @author klok
  */
 public class Semantic {
-    private ArrayList<ArrayList> tabelaSimbolos = new ArrayList<>();
-    private ArrayList<ArrayList> tabelaTipoEnumerados = new ArrayList<>();
-    private ArrayList<ArrayList> instrucoes = new ArrayList();
-    private ArrayList listaAtributos = new ArrayList();
+    private final List<Symbol> tabelaSimbolos = new ArrayList<>();
+    private final List<EnumType> tabelaTipoEnumerado = new ArrayList<>();
+    private final List<Instruction> instrucoes = new ArrayList();
+    private final ArrayList listaAtributos = new ArrayList();
     private int ponteiro = 0;
     private int tipo;
     private String contexto = "";
@@ -26,41 +27,38 @@ public class Semantic {
     private int vt = 0;
     private String saida = "";
     private boolean variavelIndexada = false;
-    private Stack pilhaDesvios = new Stack();
+    private final Stack pilhaDesvios = new Stack();
     private String variavelTmp = "";
     private int constanteTmp = 0;
     private String atr1 = null;
     private String atr2 = null;
     private int categoriaTmp = 0;
-    private ArrayList<String> erros = new ArrayList<>();
+    private final ArrayList<String> erros = new ArrayList<>();
     
     public void Action01(String token){
-        tabelaSimbolos.add( montaTupla(token, 0, "-", "-") );
+        tabelaSimbolos.add( new Symbol(token,"0", "-", "-") );
     }
     
     public void Action02(String token){
-        instrucoes.add( montaInstrucao(ponteiro, "STP", "0") );
+        instrucoes.add( new Instruction(ponteiro, "STP", "0") );
+        printTabelas();
     }
     
     public void Action03(String token){
-        if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token)) {
+        if ( existeSimbolo(token) || existeTipoEnumerado(token)) {
             System.out.println("Identificador já declarado [ " + token + " ]");
             erros.add("Identificador já declarado [ " + token + " ]");
         } else {
-            tabelaTipoEnumerados.add( newTipoEnumerado(token, new ArrayList() ) );
+            tabelaTipoEnumerado.add( new EnumType(token, new ArrayList() ) );
         }
     }
     
     public void Action04(String token){
-        if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token)  ) {
-            System.out.println("identificador já declarado [" + token + "]");
-            erros.add("identificador já declarado [" + token + "]");
+        if ( existeSimbolo(token) || existeTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token)  ) {
+            System.out.println("Identificador já declarado [" + token + "]");
+            erros.add("Identificador já declarado [" + token + "]");
         } else {
-            ArrayList tmp = tabelaTipoEnumerados.get(tabelaTipoEnumerados.size()-1);
-            ArrayList tmp2 = (ArrayList) tmp.get(1);
-            tmp2.add(token);
-            tmp.set(1, tmp2);
-            tabelaTipoEnumerados.set(tabelaTipoEnumerados.size()-1, tmp);
+           tabelaTipoEnumerado.get(tabelaTipoEnumerado.size()-1).setConstante(token);
         }
     }
     
@@ -73,30 +71,30 @@ public class Semantic {
     public void Action06(){
       int n = vp + vi;
       int size = tabelaSimbolos.size();
-
-      for(int i = size-1; i > size-n; i--) {
-          setCategoriaSimbolo(tipo, i);
+// tem erro aqui
+      for(int i = size-1; i >= size-n; i--) {
+          tabelaSimbolos.get(i).setCategoria(Integer.toString(tipo));
       }
       vp = vp + tvi;
       
       switch(tipo) {
         case 1 | 5:
-          instrucoes.add( montaInstrucao(ponteiro, "ALI", Integer.toString(vp)) );
+          instrucoes.add( new Instruction(ponteiro, "ALI", Integer.toString(vp)) );
           ponteiro++;
           break;
           
         case 2 | 6:
-          instrucoes.add( montaInstrucao(ponteiro, "ALR", Integer.toString(vp)) );
+          instrucoes.add( new Instruction(ponteiro, "ALR", Integer.toString(vp)) );
           ponteiro++;
           break;
           
         case 3 | 7:
-          instrucoes.add( montaInstrucao(ponteiro, "ALS", Integer.toString(vp)) );
+          instrucoes.add( new Instruction(ponteiro, "ALS", Integer.toString(vp)) );
           ponteiro++;
           break;
           
         case 4:
-          instrucoes.add( montaInstrucao(ponteiro, "ALB", Integer.toString(vp)) );
+          instrucoes.add( new Instruction(ponteiro, "ALB", Integer.toString(vp)) );
           ponteiro++;
           break;
       }
@@ -113,22 +111,22 @@ public class Semantic {
     public void Action07(String token){
       switch(tipo) {
         case 5:
-          instrucoes.add( montaInstrucao(ponteiro, "LDI", token) );
+          instrucoes.add( new Instruction(ponteiro, "LDI", token) );
           ponteiro++;
           break;
         
         case 6:
-          instrucoes.add( montaInstrucao(ponteiro, "LDR", token) );
+          instrucoes.add( new Instruction(ponteiro, "LDR", token) );
           ponteiro++;
           break;
 
         case 7:
-          instrucoes.add( montaInstrucao(ponteiro, "LDS", token) );
+          instrucoes.add( new Instruction(ponteiro, "LDS", token) );
           ponteiro++;
           break;
       }
 
-      instrucoes.add( montaInstrucao(ponteiro, "STC", Integer.toString(vp)) );
+      instrucoes.add( new Instruction(ponteiro, "STC", Integer.toString(vp)) );
       ponteiro++;
       vp = 0;
     }
@@ -138,21 +136,21 @@ public class Semantic {
     }
     
     public void Action09(String token){
-        if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) { 
+        if ( existeSimbolo(token) || existeTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) { 
             // ERRO identificador já declarado
-            System.out.println("identificador já declarado [" + token + "]");
-            erros.add("identificador já declarado [" + token + "]");
+            System.out.println("Identificador já declarado [" + token + "]");
+            erros.add("Identificador já declarado [" + token + "]");
         } else {
             vt++;
             vp++;
-            tabelaSimbolos.add( montaTupla(token, 0, Integer.toString(vt), "-") );
+            tabelaSimbolos.add( new Symbol(token, "0", Integer.toString(vt), "-") );
         }
     }
     
     public void Action10(String token){
       switch(contexto) {
         case "as variable":
-          if ( existeTabelaSimbolos(token) || existeTabelaTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) {
+          if ( existeSimbolo(token) || existeTipoEnumerado(token) || existeIdentificadoresConstantesTipoEnumerado(token) ) {
             System.out.println("Identificador já declarado [" + token + "]");
             erros.add("Identificador já declarado [" + token + "]");
           } else {
@@ -179,18 +177,18 @@ public class Semantic {
           if (! variavelIndexada) {
             vt++;
             vp++;
-            tabelaSimbolos.add( montaTupla(variavelTmp, -1, "VT","-") );
+            tabelaSimbolos.add( new Symbol(variavelTmp, "?", Integer.toString(vt),"-") );
           } else {
             vi++;
             tvi += constanteTmp;
-            tabelaSimbolos.add( montaTupla(variavelTmp, -1, Integer.toString(vt + 1), Integer.toString(constanteTmp)) );
+            tabelaSimbolos.add( new Symbol(variavelTmp, "?", Integer.toString(vt + 1), Integer.toString(constanteTmp)) );
             vt += constanteTmp;
           }
           break;
 
         case "atribuicao":
-          if ( existeTabelaSimbolos(token) && identificadorDeVariavel(token) ) {
-            if (atr2 == "-") {
+          if ( existeSimbolo(token) && identificadorDeVariavel(token) ) {
+            if (atr2.equals("-")) {
               if (! variavelIndexada) {
                 listaAtributos.add(atr1);
               } else {
@@ -201,23 +199,23 @@ public class Semantic {
               if (variavelIndexada) {
                 listaAtributos.add( Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1) );
               } else {
-                System.out.println("Identificador de variável indexadaexige índice");
-                erros.add("Identificador de variável indexadaexige índice");
+                System.out.println("Identificador de variável indexada exige índice");
+                erros.add("Identificador de variável indexada exige índice");
               }
             }
           } else {
-            System.out.println("Identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
-            erros.add("Identificador não declarado ou identificador de programa, de constanteou de tipo enumerado");
+            System.out.println("Identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
+            erros.add("Identificador não declarado ou identificador de programa, de constante ou de tipo enumerado");
           }
           break;
 
         case "entrada dados":
-          if ( existeTabelaSimbolos(token) && identificadorDeVariavel(token) ) {
-            if (atr2 == "-") {
+          if ( existeSimbolo(token) && identificadorDeVariavel(token) ) {
+            if (atr2.equals("-")) {
               if ( ! variavelIndexada ) {
-                instrucoes.add( montaInstrucao(ponteiro, "REA", Integer.toString(categoriaTmp)) );
+                instrucoes.add( new Instruction(ponteiro, "REA", Integer.toString(categoriaTmp)) );
                 ponteiro++;
-                instrucoes.add( montaInstrucao(ponteiro, "STR", atr1) );
+                instrucoes.add( new Instruction(ponteiro, "STR", atr1) );
                 ponteiro++;
               } else {
                 System.out.println("Identificador de variável não indexada");
@@ -225,9 +223,9 @@ public class Semantic {
               }
             } else {
               if (variavelIndexada) {
-                instrucoes.add( montaInstrucao(ponteiro, "REA", Integer.toString(categoriaTmp)) );
+                instrucoes.add( new Instruction(ponteiro, "REA", Integer.toString(categoriaTmp)) );
                 ponteiro++;
-                instrucoes.add( montaInstrucao(ponteiro, "STR", Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)) );
+                instrucoes.add( new Instruction(ponteiro, "STR", Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)) );
                 ponteiro++;
               } else {
                 System.out.println("Identificador de variável indexada exige índice");
@@ -296,12 +294,14 @@ public class Semantic {
     }
     
     public void Action18(){
-      contexto = "atribuição";
+      contexto = "atribuicao";
     }
     
     public void Action19(){
+      //erro
+      //descobrir como contar a quantidade de atributos armazenados na ação 11
       for(int i = 0; i < listaAtributos.size(); i++) {
-        instrucoes.add( montaInstrucao(ponteiro, "STR", (String) listaAtributos.get(i)) );
+        instrucoes.add( new Instruction(ponteiro, "STR", (String) listaAtributos.get(i)) );
         ponteiro++;
       }
     }
@@ -319,49 +319,49 @@ public class Semantic {
     }
 
     public void Action23(){
-      instrucoes.add( montaInstrucao(ponteiro, "WRT", "0") );
+      instrucoes.add( new Instruction(ponteiro, "WRT", "0") );
       ponteiro++;
     }
 
     public void Action24(String token){
-      if ( existeTabelaSimbolos(token) && identificadorDeVariavelOuConstante(token) ) {
+      if ( existeSimbolo(token) && identificadorDeVariavelOuConstante(token) ) {
         variavelIndexada = false;
         variavelTmp = token;
       } else {
-        System.out.println("Identificador não declarado, identificador de programaou de tipo enumerado");
-        erros.add("Identificador não declarado, identificador de programaou de tipo enumerado");
+        System.out.println("Identificador não declarado, identificador de programa ou de tipo enumerado");
+        erros.add("Identificador não declarado, identificador de programa ou de tipo enumerado");
       }
     }
 
     public void Action25(String token){
-      for(ArrayList ident : tabelaSimbolos) {
-        if (ident.get(0).equals(token)){
-          atr1 = (String) ident.get(2);
-          atr2 = (String) ident.get(3);
+      for(Symbol ident : tabelaSimbolos) {
+        if (ident.getIdentificador().equals(token)){
+          atr1 = ident.getAtributo1();
+          atr2 = ident.getAtributo2();
         }
       }
       if(!variavelIndexada){
-        if(atr2 == "-"){
+        if(atr2.equals("-")){
           if(saida.equals("write all this")){
-            instrucoes.add(montaInstrucao(ponteiro,"LDS", variavelTmp + " = "));
+            instrucoes.add(new Instruction(ponteiro,"LDS", variavelTmp + " = "));
             ponteiro++;
-            instrucoes.add(montaInstrucao(ponteiro,"WRT","0"));
+            instrucoes.add(new Instruction(ponteiro,"WRT","0"));
             ponteiro++;
           }
-          instrucoes.add(montaInstrucao(ponteiro,"LDV",atr1));
+          instrucoes.add(new Instruction(ponteiro,"LDV",atr1));
           ponteiro++;
         } else {
           System.out.println("Identificador era de uma variavel indexada, mas não foi mandado indice");
           erros.add("Identificador era de uma variavel indexada, mas não foi mandado indice");
         }        
-      } else if (atr2 != "-") {
+      } else if (atr2.equals("-")) {
         if(saida.equals("write all this")){
-            instrucoes.add(montaInstrucao(ponteiro,"LDS", variavelTmp + " = "));
+            instrucoes.add(new Instruction(ponteiro,"LDS", variavelTmp + " = "));
             ponteiro++;
-            instrucoes.add(montaInstrucao(ponteiro,"WRT","0"));
+            instrucoes.add(new Instruction(ponteiro,"WRT","0"));
             ponteiro++;
           }
-          instrucoes.add(montaInstrucao(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
+          instrucoes.add(new Instruction(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
           ponteiro++;
         } else {
           System.out.println("Identificador era de uma variavel nao indexada, ou de uma constante");
@@ -370,48 +370,47 @@ public class Semantic {
     }
     
     public void Action26(String token){
-        instrucoes.add(montaInstrucao(ponteiro, "LDI", token));
+        instrucoes.add(new Instruction(ponteiro, "LDI", token));
         ponteiro++;
     }
     
     public void Action27(String token){
-        instrucoes.add(montaInstrucao(ponteiro, "LDR", token));
+        instrucoes.add(new Instruction(ponteiro, "LDR", token));
         ponteiro++;
     }
     
     public void Action28(String token){
-        instrucoes.add(montaInstrucao(ponteiro, "LDS", token));
+        instrucoes.add(new Instruction(ponteiro, "LDS", token));
         ponteiro++;
     }
     
     public void Action29(){
       int n = (int) pilhaDesvios.pop();
-      ArrayList temp = recuperaInstrucao(n);
+      int indice = recuperaIndiceInstrucao(n);
+      instrucoes.get(indice).setEndereco(Integer.toString(ponteiro));
       //atualiza endereço da instrução
-      temp.set(2, Integer.toString(ponteiro));
-      atualizaInstrucao(temp);
+      //temp.set(2, Integer.toString(ponteiro));
+      //atualizaInstrucao(temp);
 
     }
     
     public void Action30(){
-      instrucoes.add(montaInstrucao(ponteiro, "JMF", "?"));
+      instrucoes.add(new Instruction(ponteiro, "JMF", "?"));
       ponteiro++;
       pilhaDesvios.push(ponteiro - 1);
     }
     
     public void Action31(){
-      instrucoes.add(montaInstrucao(ponteiro, "JMT", "?"));
+      instrucoes.add(new Instruction(ponteiro, "JMT", "?"));
       ponteiro++;
       pilhaDesvios.push(ponteiro - 1);
     }
     
     public void Action32(String token){
       int n = (int) pilhaDesvios.pop();
-      ArrayList temp = recuperaInstrucao(n);
-      //atualiza endereço da instrução
-      temp.set(2, Integer.toString(ponteiro));
-      atualizaInstrucao(temp);
-      instrucoes.add(montaInstrucao(ponteiro, "JMP", "?"));
+      int indice = recuperaIndiceInstrucao(n);
+      instrucoes.get(indice).setEndereco(Integer.toString(ponteiro+1));
+      instrucoes.add(new Instruction(ponteiro, "JMP", "?"));
       ponteiro++;
       pilhaDesvios.push(ponteiro - 1);
     }
@@ -421,114 +420,112 @@ public class Semantic {
     }
     
     public void Action34(String token){
-      instrucoes.add(montaInstrucao(ponteiro, "JMF", "?"));
+      instrucoes.add(new Instruction(ponteiro, "JMF", "?"));
       ponteiro++;
       pilhaDesvios.push(ponteiro - 1);
     }
     
     public void Action35(String token){
       int n = (int) pilhaDesvios.pop();
-      ArrayList temp = recuperaInstrucao(n);
-      //atualiza endereço da instrução
-      temp.set(2, Integer.toString(ponteiro + 1));
-      atualizaInstrucao(temp);
+      int indice = recuperaIndiceInstrucao(n);
+      instrucoes.get(indice).setEndereco(Integer.toString(ponteiro+1));
       n = (int) pilhaDesvios.pop();
-      instrucoes.add(montaInstrucao(ponteiro, "JMP", Integer.toString(n)));
+      instrucoes.add(new Instruction(ponteiro, "JMP", Integer.toString(n)));
       ponteiro++;    
     }
     
     public void Action36(){
-        instrucoes.add(montaInstrucao(ponteiro, "EQL", "0"));
+        instrucoes.add(new Instruction(ponteiro, "EQL", "0"));
         ponteiro++;
     }
     
     public void Action37(){
-        instrucoes.add(montaInstrucao(ponteiro, "DIF", "0"));
+        instrucoes.add(new Instruction(ponteiro, "DIF", "0"));
         ponteiro++;
     }
     
     public void Action38(){
-        instrucoes.add(montaInstrucao(ponteiro, "SMR", "0"));
+        instrucoes.add(new Instruction(ponteiro, "SMR", "0"));
         ponteiro++;
     }
     
     public void Action39(){
-        instrucoes.add(montaInstrucao(ponteiro, "BGR", "0"));
+        instrucoes.add(new Instruction(ponteiro, "BGR", "0"));
         ponteiro++;
     }
     
     public void Action40(){
-        instrucoes.add(montaInstrucao(ponteiro, "SME", "0"));
+        instrucoes.add(new Instruction(ponteiro, "SME", "0"));
         ponteiro++;
     }
     
     public void Action41(){
-        instrucoes.add(montaInstrucao(ponteiro, "BGE", "0"));
+        instrucoes.add(new Instruction(ponteiro, "BGE", "0"));
         ponteiro++;
     }
     
     public void Action42(){
-        instrucoes.add(montaInstrucao(ponteiro, "ADD", "0"));
+        instrucoes.add(new Instruction(ponteiro, "ADD", "0"));
         ponteiro++;
     }
     
     public void Action43(){
-        instrucoes.add(montaInstrucao(ponteiro, "SUB", "0"));
+        instrucoes.add(new Instruction(ponteiro, "SUB", "0"));
         ponteiro++;
     }
     
     public void Action44(){
-      instrucoes.add(montaInstrucao(ponteiro, "OR", "0"));
+      instrucoes.add(new Instruction(ponteiro, "OR", "0"));
       ponteiro++;
     }
     
     public void Action45(){
-        instrucoes.add(montaInstrucao(ponteiro, "MUL", "0"));
+        instrucoes.add(new Instruction(ponteiro, "MUL", "0"));
         ponteiro++;
     }
     
     public void Action46(){
-        instrucoes.add(montaInstrucao(ponteiro, "DIV", "0"));
+        instrucoes.add(new Instruction(ponteiro, "DIV", "0"));
         ponteiro++;
     }
     
     public void Action47(){
-        instrucoes.add(montaInstrucao(ponteiro, "DIV", "0"));
+        instrucoes.add(new Instruction(ponteiro, "DIV", "0"));
         ponteiro++;
     }
     
     public void Action48(){
-        instrucoes.add(montaInstrucao(ponteiro, "MOD", "0"));
+        instrucoes.add(new Instruction(ponteiro, "MOD", "0"));
         ponteiro++;
     }
     
     public void Action49(){
-      instrucoes.add(montaInstrucao(ponteiro, "AND", "0"));
+      instrucoes.add(new Instruction(ponteiro, "AND", "0"));
         ponteiro++;
     }
     
     public void Action50(){
-      instrucoes.add(montaInstrucao(ponteiro, "POW", "0"));
+      instrucoes.add(new Instruction(ponteiro, "POW", "0"));
       ponteiro++;
   }
     
   public void Action51(){
-    for(ArrayList ident : tabelaSimbolos) {
-      if (ident.get(0).equals(variavelTmp)){
-        atr1 = (String) ident.get(2);
-        atr2 = (String) ident.get(3);
+    for(Symbol ident : tabelaSimbolos) {
+      if (ident.getIdentificador().equals(variavelTmp)){
+        atr1 = ident.getAtributo1();
+        atr2 = ident.getAtributo2();
       }
     }
     if(!variavelIndexada){
-      if(atr2 == "-"){
-        instrucoes.add(montaInstrucao(ponteiro,"LDV",atr1));
+      if(atr2.equals("-")){
+        instrucoes.add(new Instruction(ponteiro,"LDV",atr1));
         ponteiro++;
       } else {
         System.out.println("Identificador de variável indexada exige índice");
         erros.add("Identificador de variável indexada exige índice");
       }
-    } else if (atr2 != "-") {
-        instrucoes.add(montaInstrucao(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
+    } else if (atr2.equals("-")) {
+        instrucoes.add(new Instruction(ponteiro,"LDV",Integer.toString(Integer.parseInt(atr1) + constanteTmp - 1)));
         ponteiro++;
     } else {
         System.out.println("Identificador de constante ou de variável não indexada ");
@@ -537,20 +534,20 @@ public class Semantic {
   }
     
   public void Action52(){
-      instrucoes.add(montaInstrucao(ponteiro, "LDB", "TRUE"));
+      instrucoes.add(new Instruction(ponteiro, "LDB", "TRUE"));
       ponteiro++;
   }
   
   public void Action53(){
-      instrucoes.add(montaInstrucao(ponteiro, "LDB", "FALSE"));
+      instrucoes.add(new Instruction(ponteiro, "LDB", "FALSE"));
       ponteiro++;
   }
   
   public void Action54(){
-      instrucoes.add(montaInstrucao(ponteiro, "NOT", "0"));
+      instrucoes.add(new Instruction(ponteiro, "NOT", "0"));
       ponteiro++;
   }
-  
+  /*
   private ArrayList montaTupla(String token, int categoria, String atributo1, String atributo2){
       ArrayList tupla = new ArrayList();
       tupla.add(token);
@@ -569,19 +566,19 @@ public class Semantic {
       
       return cmd;
   }
+*/
   
-  private ArrayList recuperaInstrucao(int ponteiro){
-    ArrayList tmp = new ArrayList();
-    for(ArrayList inst : instrucoes){
-      int pt = (int) inst.get(0);
-      if ( pt == ponteiro ){
-        tmp = inst;
+  private int recuperaIndiceInstrucao(int ponteiro){
+    int n = 0;
+    for(Instruction inst : instrucoes){
+      if ( inst.getPonteiro() == ponteiro ){
+        return n;
       }
     }
-    return tmp;
+    return -1;
   }
 
-  private void atualizaInstrucao(ArrayList instAtualizada){
+ /* private void atualizaInstrucao(ArrayList instAtualizada){
     int n = (int) instAtualizada.get(0);
     for(ArrayList inst : instrucoes){
       int pt = (int) inst.get(0);
@@ -597,52 +594,60 @@ public class Semantic {
       tmp.add(identificadores);
       return tmp;
   }
-  
-  private boolean existeTabelaSimbolos(String token) {
-      for (ArrayList tabelaSimbolo : tabelaSimbolos) {
-          if (tabelaSimbolo.get(0).equals(token)) {
-              return true;
-          }
-      }
-      return false;
+  */
+  private boolean existeSimbolo(String token) {
+    if (! tabelaSimbolos.isEmpty()) {
+        for (Symbol simbolo : tabelaSimbolos) {
+            if (simbolo.getIdentificador().equals(token)) {
+                return true;
+            }
+        }
+    }
+    return false;
   }
   
-  private boolean existeTabelaTipoEnumerado(String token) {
-      for (ArrayList tabelaTipoEnumerado : tabelaTipoEnumerados) {
-          if (tabelaTipoEnumerado.get(0).equals(token)) {
-              return true;
-          }
+  private boolean existeTipoEnumerado(String token) {
+      if (! tabelaTipoEnumerado.isEmpty()) {
+        for (EnumType tipoEnumerado : tabelaTipoEnumerado) {
+            if (tipoEnumerado.getIdentificador().equals(token)) {
+                return true;
+            }
+        }
       }
       return false;
   }
   
   private boolean existeIdentificadoresConstantesTipoEnumerado(String token) {
-      ArrayList tipoEnum = tabelaTipoEnumerados.get(tabelaTipoEnumerados.size()-1);
-      ArrayList idEnum = (ArrayList) tipoEnum.get(1);
-      
-      if (idEnum.size() > 0) {
-          for (Object object : idEnum) {
-              if (object.equals(token) ) {
-                  return true;
-              }
-          }
-      }
-      
-      return false;
-  }
+      if (! tabelaTipoEnumerado.isEmpty()) {
+        EnumType tipoEnum = tabelaTipoEnumerado.get(tabelaTipoEnumerado.size()-1);
+        ArrayList idEnum = tipoEnum.getConstantes();
 
+        if (idEnum.size() > 0) {
+            for (Object object : idEnum) {
+                if (object.equals(token) ) {
+                    return true;
+                }
+            }
+        }
+     }
+      
+     return false;
+  }
+/*
   private void setCategoriaSimbolo(int tipo, int i) {
     ArrayList tmp = tabelaSimbolos.get(i);
     tmp.set(1, tipo);
     tabelaSimbolos.set(i, tmp);
   }
-
+*/
   private boolean identificadorDeVariavel(String token) {
-    for(ArrayList ident : tabelaSimbolos) {
-      if (ident.get(0).equals(token) && ((int) ident.get(1) >= 1 || (int) ident.get(1) <= 4)) {
-        atr1 = (String) ident.get(2);
-        atr2 = (String) ident.get(3);
-        categoriaTmp = (int) ident.get(1);
+      int n;
+    for(Symbol simbolo : tabelaSimbolos) {
+        n = Integer.parseInt(simbolo.getCategoria());
+      if (simbolo.getIdentificador().equals(token) && (n >= 1 || n <= 4)) {
+        atr1 =  simbolo.getAtributo1();//(String) ident.get(2);
+        atr2 = simbolo.getAtributo2();//(String) ident.get(3);
+        categoriaTmp = n;
         return true;
       }
     }
@@ -650,11 +655,13 @@ public class Semantic {
   }
 
   private boolean identificadorDeVariavelOuConstante(String token) {
-    for(ArrayList ident : tabelaSimbolos) {
-      if (ident.get(0).equals(token) && (int) ident.get(1) != 0 ) {
-        atr1 = (String) ident.get(2);
-        atr2 = (String) ident.get(3);
-        categoriaTmp = (int) ident.get(1);
+      int n;
+    for(Symbol ident : tabelaSimbolos) {
+        n = Integer.parseInt(ident.getCategoria());
+      if (ident.getIdentificador().equals(token) && n != 0 ) {
+        atr1 = ident.getAtributo1();
+        atr2 = ident.getAtributo1();
+        categoriaTmp = n;
         return true;
       }
     }
@@ -664,4 +671,24 @@ public class Semantic {
   public ArrayList<String> getErros(){
       return erros;
   }
+  public List<Symbol> getSimbolos(){
+      return tabelaSimbolos;
+  }
+  public List<Instruction> getInstructions(){
+      return instrucoes;
+  }
+  public List<EnumType> getEnums(){
+      return tabelaTipoEnumerado;
+  }
+
+    private void printTabelas() {
+        for(Symbol s : getSimbolos()){
+            System.out.println(s.getIdentificador() +" | "+ s.getCategoria() +
+                    " | "+s.getAtributo1() +" | "+ s.getAtributo2());
+            }
+        for(Instruction i : getInstructions()){
+            System.out.println(i.getPonteiro() +" | "+ i.getInstrucao() +
+                    " | "+i.getEndereco());
+        }
+    }
 }

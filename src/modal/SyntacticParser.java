@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class SyntacticParser {
     private static SyntacticParser instance = null;
-    
+    private MaquinaVirtual vm;
     private SyntacticParser(){}
     
     public static SyntacticParser getInstance(){
@@ -21,16 +21,33 @@ public class SyntacticParser {
     
     public String analyze(String text) {
         Parser parser = new Parser(new StringReader(text));
+        
         StringBuilder output = new StringBuilder();
         try {
-            ArrayList<String> erros = parser.syntaxAnalisys();
+            System.out.println("tentei");
+            Semantic sem = parser.syntaxAnalisys();
             
-            if (erros.size() > 0) {
-                for (String erro : erros) {
-                    output.append(erro + "\n");
+            if (sem.getErros().size() > 0) {
+                System.out.println("errou");
+                for (String erro : sem.getErros()) {
+                    output.append(erro).append("\n");
                 }
             } else {
-                output.append("Success !");
+                
+                vm = new MaquinaVirtual(sem.getSimbolos(), sem.getInstructions(),sem.getEnums());
+                System.out.println("hora de executar");
+                vm.executar();
+                if(vm.getErros().size() > 0){
+                    for (String erro : vm.getErros()) {
+                        output.append(erro).append("\n");
+                    }
+                } else {
+                    output.append("Success!\n");
+                    for (String result : vm.getResult()) {
+                        output.append(result).append("\n");
+                    }
+                }
+                
             }
         } catch (Exception e) {
             output.append(e.getMessage());
