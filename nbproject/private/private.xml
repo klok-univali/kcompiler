@@ -3,8 +3,25 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/media/klok/dados/univali/2020-01/compiladores/codigos/kcompiler/src/modal/Semantic.java</file>
-            <file>file:/media/klok/dados/univali/2020-01/compiladores/codigos/kcompiler/src/modal/linguagem.jj</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/OutputData.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/ParserTokenManager.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/Symbol.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/view/TextLineNumber.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/Parser.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/EnumType.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/Token.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/Semantic.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/ParseException.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/MaquinaVirtual.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/ParserConstants.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/view/KcompilerView.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/SimpleCharStream.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/TokenMgrError.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/SyntacticParser.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/Instruction.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/kcompiler/Kcompiler.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/controller/KcompilerController.java</file>
+            <file>file:/C:/Users/Eduardo/Documents/GitHub/kcompiler/src/modal/linguagem.jj</file>
         </group>
     </open-files>
 </project-private>
