@@ -594,6 +594,7 @@ public class Semantic {
       tmp.add(identificadores);
       return tmp;
   }
+
   */
   private boolean existeSimbolo(String token) {
     if (! tabelaSimbolos.isEmpty()) {

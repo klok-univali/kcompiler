@@ -12,7 +12,6 @@ public class Parser {
     public void execute() throws ParseException {
         Token token = getNextToken();
         
-        
         while(token.kind != 0){
             token = getNextToken();
         }
